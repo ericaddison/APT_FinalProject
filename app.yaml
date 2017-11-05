@@ -1,0 +1,49 @@
+runtime: python27
+api_version: 1
+threadsafe: yes
+service: default
+
+handlers:
+
+- url: /admindash/.*
+  script: google.appengine.ext.admin.application
+- url: /admin/notadmin
+  static_files: templates/admin/NotAdmin.html
+  upload: templates/admin/NotAdmin.html
+- url: /admin/.*
+  script: source.Admin.app
+
+
+
+# [START views]
+- url: /
+  script: Routes.app
+# [START views]
+
+
+# [START services]
+- url: /services/
+  script: source.services.Services.app
+- url: /services/management
+  script: Routes.app
+# [END services]
+
+- url: /css
+  static_dir: templates/css
+- url: /js
+  static_dir: templates/js
+- url: /images
+  static_dir: templates/images
+
+
+- url: /.*
+  script: source.Main.app
+
+
+# [START libraries]
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+# [END libraries]
