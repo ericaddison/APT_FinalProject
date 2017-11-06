@@ -5,40 +5,29 @@ service: default
 
 handlers:
 
-- url: /admindash/.*
-  script: google.appengine.ext.admin.application
-- url: /admin/notadmin
-  static_files: templates/admin/NotAdmin.html
-  upload: templates/admin/NotAdmin.html
+# [START Admin]
 - url: /admin/.*
-  script: source.Admin.app
+  script: source.admin.Routes.app
+# [END Admin]
 
+# [START API services]
+- url: /api/.*
+  script: source.api.Routes.app
+# [END API services]
 
+# [START webapp views]
+- url: /.*
+  script: source.views.Routes.app
+# [START webapp views]
 
-# [START views]
-- url: /
-  script: Routes.app
-# [START views]
-
-
-# [START services]
-- url: /services/
-  script: source.services.Services.app
-- url: /services/management
-  script: Routes.app
-# [END services]
-
+# [START static content]
 - url: /css
   static_dir: templates/css
 - url: /js
   static_dir: templates/js
 - url: /images
   static_dir: templates/images
-
-
-- url: /.*
-  script: source.Main.app
-
+# [END static content]
 
 # [START libraries]
 libraries:
