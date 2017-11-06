@@ -24,4 +24,4 @@ class UserSettingsApi(ApiServiceHandler):
 
     def put_hook(self):
         """Update user settings for a user"""
-        response = update_user_settings()
+        return update_user_settings()

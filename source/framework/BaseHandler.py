@@ -20,7 +20,7 @@ class BaseHandler(webapp2.RequestHandler):
         self.response.write(response_text)
 
     def write_dictionary_response(self, response_dictionary):
-        self.response.write(json.dumps(response_dictionary))
+        self.write_response(json.dumps(response_dictionary))
 
     def get_request_parameter_dictionary(self):
         return self.request.params
