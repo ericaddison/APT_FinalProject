@@ -1,8 +1,8 @@
 from source.framework.webapp2_helpers import make_routes
 from source.api.Conversations import ConversationsApi
-from source.api.UserSettings import UserSettingsApi
+from source.api.Users import UsersApi
 
 app = make_routes([
     ('/api/conversations', ConversationsApi),
-    ('/api/usersettings', UserSettingsApi)
+    ('/api/users', UsersApi)
 ])
