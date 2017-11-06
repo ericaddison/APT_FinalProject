@@ -1,11 +1,8 @@
-import webapp2
+from source.framework.framework_helpers import make_routes
 
-from source.Main import ManagePage
 
-app = webapp2.WSGIApplication([
-
+app = make_routes([
     # [START views]
-    ('/manage', ManagePage)
+    #('/manage', ManagePage)
     # [END views]
-
-], debug=True)
+])

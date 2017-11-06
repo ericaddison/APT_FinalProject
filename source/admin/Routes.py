@@ -1,9 +1,6 @@
-import webapp2
+from source.framework.framework_helpers import make_routes
+from source.admin.Admin import AdminDashboard
 
-app = webapp2.WSGIApplication([
-
-    # [START views]
-    ('/admin/', ManagePage)
-    # [END views]
-
-], debug=True)
+app = make_routes([
+    ('/admin/', AdminDashboard)
+])
