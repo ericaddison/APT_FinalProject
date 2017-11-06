@@ -1,7 +1,7 @@
 import webapp2
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext.webapp import template
-
+import json
 
 # a base class for all request handlers in our app
 class BaseHandler(webapp2.RequestHandler):
@@ -11,6 +11,9 @@ class BaseHandler(webapp2.RequestHandler):
 
     def write_response(self, response_text):
         self.response.write(response_text)
+
+    def write_dictionary_response(self, response_dictionary):
+        self.response.write(json.dumps(response_dictionary))
 
     def get_request_parameter_dictionary(self):
         return self.request.params

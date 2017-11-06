@@ -6,6 +6,3 @@ class AdminDashboard(BaseHandler):
 
         template_values = {}
         self.render_template('templates/admin/AdminDashboard.html', template_values)
-
-
-
