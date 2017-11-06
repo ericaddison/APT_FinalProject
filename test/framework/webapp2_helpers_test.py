@@ -1,8 +1,8 @@
 import unittest
-import source.framework.framework_helpers as fh
+import source.framework.webapp2_helpers as fh
 
 
-class TestWebAppMethods(unittest.TestCase):
+class TestWebApp2Methods(unittest.TestCase):
 
     def test_make_routes(self):
         route = '/route1'
