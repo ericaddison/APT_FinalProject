@@ -1,14 +1,24 @@
 from source.framework.BaseHandler import BaseHandler
 
+NO_USER_RESPONSE = {'status': 404, 'message': 'User not found'}
+
 
 class ApiServiceHandler(BaseHandler):
     """Web handler to handle API endpoints"""
 
     def process(self, method):
         self.set_content_text_json()
-        response = method()
+
+        # authenticate user here #
+        user = None
+        if not user:
+            response = NO_USER_RESPONSE
+        else:
+            response = method()
+
         if 'status' in response.keys():
             self.response.set_status(response['status'])
+
         self.write_dictionary_response(response)
 
     def get(self):
