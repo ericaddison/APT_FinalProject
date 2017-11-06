@@ -1,5 +1,5 @@
 import unittest
-from source.api.get_conversations import get_conversations
+from source.api.Conversations import get_conversations
 
 
 class TestApiMethods(unittest.TestCase):
