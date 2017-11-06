@@ -1,7 +1,14 @@
 import webapp2
-from google.appengine.ext.webapp import blobstore_handlers
-from google.appengine.ext.webapp import template
 import json
+
+# [BEGIN jinja2 setup]
+from jinja2 import Environment, FileSystemLoader, Template
+import os
+this_dir = os.path.dirname(os.path.abspath(__file__))
+j2_env = Environment(loader=FileSystemLoader('./templates'),
+                     trim_blocks=True)
+# [END jinja2 setup]
+
 
 # a base class for all request handlers in our app
 class BaseHandler(webapp2.RequestHandler):
@@ -34,11 +41,4 @@ class BaseHandler(webapp2.RequestHandler):
         return self.request.url
 
     def render_template(self, path, template_values_dict):
-        self.write_response(template.render(path, template_values_dict))
-
-
-# file handler. Currently just extends BaseHandler and google blobstoreUpload handler
-class FileUploadHandler(BaseHandler, blobstore_handlers.BlobstoreUploadHandler):
-    @classmethod
-    def nothing(cls):
-        print("place-holder")
+        self.write_response(j2_env.get_template(path).render(template_values_dict))
