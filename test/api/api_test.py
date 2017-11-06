@@ -6,7 +6,7 @@ class TestApiMethods(unittest.TestCase):
 
     def test_get_conversations_all(self):
         convs = get_conversations()
-        assert convs == "All Conversations"
+        assert convs == "All conversations"
 
 
 if __name__ == '__main__':

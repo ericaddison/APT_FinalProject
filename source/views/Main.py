@@ -2,6 +2,7 @@ from source.framework.BaseHandler import BaseHandler
 
 
 class LandingPage(BaseHandler):
+    """The home page"""
     def get(self):
 
         template_values = {}

@@ -10,8 +10,8 @@ j2_env = Environment(loader=FileSystemLoader('./templates'),
 # [END jinja2 setup]
 
 
-# a base class for all request handlers in our app
 class BaseHandler(webapp2.RequestHandler):
+    """Base class for all Hailing-Frequencies web handlers to extend"""
 
     def get_request_param(self, param_name):
         return self.request.get(param_name)
