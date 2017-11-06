@@ -14,7 +14,21 @@ def get_conversations(names=None):
 def create_conversation():
     """Create a new conversation"""
     response = {}
-    response['conversations'] = "New conversations"
+    response['conversations'] = "New conversation"
+    return response
+
+
+def update_conversation():
+    """Update conversation settings"""
+    response = {}
+    response['conversations'] = "Updated conversation"
+    return response
+
+
+def delete_conversation():
+    """Delete a conversation"""
+    response = {}
+    response['conversations'] = "Deleted conversation"
     return response
 
 
@@ -26,5 +40,13 @@ class ConversationsApi(ApiServiceHandler):
         return get_conversations()
 
     def post_hook(self):
-        """Set conversation data API"""
+        """Create conversation data API"""
         return create_conversation()
+
+    def put_hook(self):
+        """Update conversation API"""
+        return update_conversation()
+
+    def delete_hook(self):
+        """Delete conversation API"""
+        return delete_conversation()

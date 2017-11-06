@@ -3,6 +3,6 @@ from source.api.Conversations import ConversationsApi
 from source.api.Users import UsersApi
 
 app = make_routes([
-    ('/api/conversations', ConversationsApi),
-    ('/api/users', UsersApi)
+    ('/api/conversations/.*', ConversationsApi),
+    ('/api/users/.*', UsersApi)
 ])

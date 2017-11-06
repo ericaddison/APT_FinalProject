@@ -27,17 +27,19 @@ class ApiServiceHandler(BaseHandler):
         self.process(self.delete_hook)
 
     def get_hook(self):
-        return {'message': 'GET method not allowed', 'status': '405'}
+        return self.notallowed_response('GET')
 
     def post_hook(self):
-        return {'message': 'POST method not allowed', 'status': '405'}
+        return self.notallowed_response('POST')
 
     def put_hook(self):
-        return {'message': 'PUT method not allowed', 'status': '405'}
+        return self.notallowed_response('PUT')
 
     def patch_hook(self):
-        return {'message': 'PATCH method not allowed', 'status': '405'}
+        return self.notallowed_response('PATCH')
 
     def delete_hook(self):
-        return {'message': 'DELETE method not allowed', 'status': '405'}
+        return self.notallowed_response('DELETE')
 
+    def notallowed_response(self, method):
+        return {'message': '{} method not allowed'.format(method), 'status': '405'}
