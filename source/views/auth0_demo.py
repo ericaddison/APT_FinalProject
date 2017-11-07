@@ -2,7 +2,7 @@ import webapp2
 import urllib2
 import urllib
 import json
-from source.config.auth0 import *
+from source.config.authentication import *
 
 
 MAIN_PAGE_HTML = """\
@@ -21,7 +21,7 @@ MAIN_PAGE_HTML = """\
     <button onclick="widget.signin()">Login</button>
   </body>
 </html>
-""" % (DOMAIN, CLIENT_ID, CALLBACK_URL)
+""" % (AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CALLBACK_URL)
 
 
 class Auth0MainPage(webapp2.RequestHandler):
@@ -32,10 +32,10 @@ class Auth0MainPage(webapp2.RequestHandler):
 class Auth0LoginCallback(webapp2.RequestHandler):
     def get(self):
         code = self.request.get("code")
-        base_url = "https://{domain}".format(domain=DOMAIN)
-        data = urllib.urlencode([('client_id', CLIENT_ID),
-                                 ('redirect_uri', CALLBACK_URL),
-                                 ('client_secret', CLIENT_SECRET),
+        base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
+        data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
+                                 ('redirect_uri', AUTH0_CALLBACK_URL),
+                                 ('client_secret', AUTH0_CLIENT_SECRET),
                                  ('code', code),
                                  ('grant_type', 'authorization_code')])
         req = urllib2.Request(base_url + "/oauth/token", data)
