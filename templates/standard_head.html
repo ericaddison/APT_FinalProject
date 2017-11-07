@@ -1,1 +1,14 @@
 {% include "FirebaseHeader.html" %}
+<h1>Hailing Frequencies</h1>
+<form>
+    <input type="button" id="logoutButton" value="Signout" onclick="signoutFunction()">
+</form>
+<script>
+   function signoutFunction(){
+        firebase.auth().signOut().then(function() {
+            window.alert("Signed Out");
+        }).catch(function(error) {
+            window.alert("Error During Signout");
+        });
+    }
+</script>

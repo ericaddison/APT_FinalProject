@@ -1,0 +1,51 @@
+<html>
+<head>
+
+    {% include "standard_head.html" %}
+
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm" action="/login" method="post">
+        Email: <input type= "text" name="email"><br>
+        Password: <input type= "password" name="password"><br>
+        <input type="submit" value="Submit" onclick="loginFunction()"/>
+    </form>
+
+    <h2>New Account</h2>
+    <form id="newAccountForm" action="/login" method="post">
+        Email: <input type= "text" name="email"><br>
+        Password: <input type= "password" name="password"><br>
+        First Name: <input type="text" name="fname"><br>
+        Last Name: <input type="text" name="lname"><br>
+        <input type="submit" value="Submit" onclick="newAccountFunction()"/>
+    </form>
+
+    <script>
+        function loginFunction(){
+            var formContents = document.getElementById("loginForm");
+            var email = formContents.elements[0].value;
+            var password = formContents.elements[1].value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                console.log(error.code);
+                console.log(error.message);
+            });
+        }
+
+         function newAccountFunction(){
+            var formContents = document.getElementById("newAccountForm");
+            var email = formContents.elements[0].value;
+            var password = formContents.elements[1].value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                console.log(error.code);
+                console.log(error.message);
+            });
+        }
+    </script>
+
+
+
+</body>
+</html>
