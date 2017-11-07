@@ -25,6 +25,11 @@ class BaseHandler(webapp2.RequestHandler):
     def get_request_parameter_dictionary(self):
         return self.request.params
 
+    def get_auth_header(self):
+        if 'Authorization' in self.request.headers.keys():
+            return self.request.headers['Authorization']
+        return None
+
     def set_content_text_plain(self):
         self.response.content_type = 'text/plain'
 

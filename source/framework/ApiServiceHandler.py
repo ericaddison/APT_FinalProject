@@ -1,5 +1,4 @@
 from source.framework.BaseHandler import BaseHandler
-import source.framework.constants as c
 from source.framework.user_authentication import user_authentication
 
 BAD_AUTH_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
@@ -12,8 +11,12 @@ class ApiServiceHandler(BaseHandler):
         self.set_content_text_json()
 
         # authenticate user with required access_token
-        token = self.get_request_param(c.auth_token_parm)
-        user = user_authentication(token)
+        user = None
+        auth_header = self.get_auth_header()
+        if auth_header:
+            user = user_authentication(auth_header)
+        else:
+            print("ApiServiceHandler.process(): no auth_header found")
 
         # if user not verified or found, return bad response
         if not user:
