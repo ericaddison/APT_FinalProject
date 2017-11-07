@@ -5,6 +5,9 @@ service: default
 
 handlers:
 
+- url: /auth0demo2
+  static_dir: templates/auth0demo
+
 # [START Admin]
 - url: /admin/.*
   script: source.admin.Routes.app
