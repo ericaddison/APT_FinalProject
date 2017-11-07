@@ -32,18 +32,18 @@ def delete_user():
 class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
 
-    def get_hook(self):
+    def get_hook(self, user):
         """Get user settings for a user"""
         return get_user()
 
-    def put_hook(self):
+    def put_hook(self, user):
         """Update user settings for a user"""
         return update_user()
 
-    def post_hook(self):
+    def post_hook(self, user):
         """Create a new user"""
         return create_user()
 
-    def delete_hook(self):
+    def delete_hook(self, user):
         """Delete a user"""
         return delete_user()

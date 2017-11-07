@@ -35,18 +35,18 @@ def delete_conversation():
 class ConversationsApi(ApiServiceHandler):
     """REST API handler to allow interaction with conversation data"""
 
-    def get_hook(self):
+    def get_hook(self, user):
         """Get conversation data API"""
         return get_conversations()
 
-    def post_hook(self):
+    def post_hook(self, user):
         """Create conversation data API"""
         return create_conversation()
 
-    def put_hook(self):
+    def put_hook(self, user):
         """Update conversation API"""
         return update_conversation()
 
-    def delete_hook(self):
+    def delete_hook(self, user):
         """Delete conversation API"""
         return delete_conversation()

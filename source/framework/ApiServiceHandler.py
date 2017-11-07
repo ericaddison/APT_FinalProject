@@ -1,6 +1,6 @@
 from source.framework.BaseHandler import BaseHandler
 
-NO_USER_RESPONSE = {'status': 404, 'message': 'User not found'}
+NO_USER_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
 
 
 class ApiServiceHandler(BaseHandler):
@@ -14,7 +14,7 @@ class ApiServiceHandler(BaseHandler):
         if not user:
             response = NO_USER_RESPONSE
         else:
-            response = method()
+            response = method(user)
 
         if 'status' in response.keys():
             self.response.set_status(response['status'])
@@ -36,20 +36,20 @@ class ApiServiceHandler(BaseHandler):
     def delete(self):
         self.process(self.delete_hook)
 
-    def get_hook(self):
+    def get_hook(self, user):
         return self.notallowed_response('GET')
 
-    def post_hook(self):
+    def post_hook(self, user):
         return self.notallowed_response('POST')
 
-    def put_hook(self):
+    def put_hook(self, user):
         return self.notallowed_response('PUT')
 
-    def patch_hook(self):
+    def patch_hook(self, user):
         return self.notallowed_response('PATCH')
 
-    def delete_hook(self):
+    def delete_hook(self, user):
         return self.notallowed_response('DELETE')
 
     def notallowed_response(self, method):
-        return {'message': '{} method not allowed'.format(method), 'status': '405'}
+        return {'message': '{} method not allowed'.format(method), 'status': 405}
