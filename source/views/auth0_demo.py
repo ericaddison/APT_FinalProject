@@ -2,12 +2,8 @@ import webapp2
 import urllib2
 import urllib
 import json
+from source.config.auth0 import *
 
-## CHANGE THIS
-CLIENT_ID = "JhKTQ3FyHLTEY3PPsQ6MQ8OXsUXuNXEN"
-CLIENT_SECRET = "B9hr8uMQTD514hlYRNBYDlVEtdkJyZiEylY838RJOjsP23OlLppMDYY_1lu0Brxn"
-DOMAIN = "hailing-frequencies.auth0.com"
-CALLBACK_URL = "http://localhost:8080/auth0demo/callback"
 
 MAIN_PAGE_HTML = """\
 <html>

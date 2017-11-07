@@ -1,4 +1,5 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler
+from source.models.Users import Users
 
 
 def get_user(email=""):
@@ -34,16 +35,22 @@ class UsersApi(ApiServiceHandler):
 
     def get_hook(self, user):
         """Get user settings for a user"""
+        # return user settings for a user based on email from access token
         return get_user()
 
     def put_hook(self, user):
         """Update user settings for a user"""
+        # update user settings by parsing incoming parameters and
+        # updating database
         return update_user()
 
     def post_hook(self, user):
         """Create a new user"""
+        # retrieve user info from access token and store in database
+        # store as an unverified user until email verification
         return create_user()
 
     def delete_hook(self, user):
         """Delete a user"""
+        # delete user info from database by email in the token info
         return delete_user()

@@ -1,4 +1,4 @@
-import ndb
+from google.appengine.ext import ndb
 
 class ConvMessages(ndb.Model):
     userID = ndb.KeyProperty(indexed=True, kind='Users')

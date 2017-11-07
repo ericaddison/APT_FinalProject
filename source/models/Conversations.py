@@ -1,4 +1,4 @@
-import ndb
+from google.appengine.ext import ndb
 
 class Conversations(ndb.Model):
     owner = ndb.KeyProperty(indexed=True, kind='Users')
