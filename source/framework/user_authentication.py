@@ -1,4 +1,5 @@
 import urllib2
+from jose import jwt
 from source.config.authentication import *
 
 

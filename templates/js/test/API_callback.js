@@ -19,9 +19,29 @@ var settings = {
 
 $.ajax(settings).done(function (response) {
   console.log(response);
-  $("body").append(response.access_token)
+  access_token = response.access_token
+  $("body").append(response)
 });
 
+
+$("#api_button").click(function(){
+
+    var settings = {
+      "async": true,
+      "url": "/api/users/",
+      "method": "GET",
+      "headers": {
+        "content-type": "application/json",
+        "authorization": "Bearer " + access_token
+      }
+    }
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+    });
+
+
+})
 
 
 });
