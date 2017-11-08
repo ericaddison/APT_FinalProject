@@ -3,6 +3,7 @@ import urllib2
 import urllib
 import json
 from source.config.authentication import *
+import lib.jose as jose
 
 
 MAIN_PAGE_HTML = """\
@@ -43,8 +44,10 @@ class Auth0LoginCallback(webapp2.RequestHandler):
         oauth = json.loads(response.read())
         userinfo = base_url + "/userinfo?access_token=" + oauth['access_token']
 
+        print("I got access token {}".format(oauth['access_token']))
+
         response = urllib2.urlopen(userinfo)
         data = response.read()
 
         ## print user data
-        self.response.write(data)
+        self.response.write(json.dumps(oauth))

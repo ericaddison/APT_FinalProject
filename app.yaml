@@ -5,9 +5,6 @@ service: default
 
 handlers:
 
-- url: /auth0demo2
-  static_dir: templates/auth0demo
-
 # [START Admin]
 - url: /admin/.*
   script: source.admin.Routes.app
@@ -18,11 +15,6 @@ handlers:
   script: source.api.Routes.app
 # [END API services]
 
-# [START webapp views]
-- url: /.*
-  script: source.views.Routes.app
-# [START webapp views]
-
 # [START static content]
 - url: /css
   static_dir: templates/css
@@ -31,6 +23,11 @@ handlers:
 - url: /images
   static_dir: templates/images
 # [END static content]
+
+# [START webapp views]
+- url: /.*
+  script: source.views.Routes.app
+# [START webapp views]
 
 # [START libraries]
 libraries:
