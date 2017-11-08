@@ -2,10 +2,10 @@ from google.appengine.ext import ndb
 
 class Users(ndb.Model):
     email = ndb.StringProperty(indexed=True)
-    fName = ndb.StringProperty
-    lName = ndb.StringProperty
-    joinDate = ndb.DateTimeProperty
-    prefComm = ndb.StringProperty #Preferred Communication Method
+    fName = ndb.StringProperty()
+    lName = ndb.StringProperty()
+    joinDate = ndb.DateTimeProperty()
+    prefComm = ndb.StringProperty() #Preferred Communication Method
 
 
     def get_users(self):
