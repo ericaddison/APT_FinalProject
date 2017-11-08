@@ -57,20 +57,13 @@ As an example, encryption can be done as follows:
     >>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
 
 .. _ARC4: http://en.wikipedia.org/wiki/RC4
+
+:undocumented: __revision__, __package__
 """
 
-from Crypto.Util.py3compat import *
+__revision__ = "$Id$"
 
-from Crypto.Util._raw_api import (load_pycryptodome_raw_lib, VoidPointer,
-                                  create_string_buffer, get_raw_buffer,
-                                  SmartPointer, c_size_t, expect_byte_string)
-
-
-_raw_arc4_lib = load_pycryptodome_raw_lib("Crypto.Cipher._ARC4","""
-                    int ARC4_stream_encrypt(void *rc4State, const uint8_t in[], uint8_t out[], size_t len);
-                    int ARC4_stream_init(uint8_t *key, size_t keylen, void **pRc4State);
-                    int ARC4_stream_destroy(void *rc4State);
-                    """);
+from Crypto.Cipher import _ARC4
 
 class ARC4Cipher:
     """ARC4 cipher object"""
@@ -78,34 +71,12 @@ class ARC4Cipher:
 
     def __init__(self, key, *args, **kwargs):
         """Initialize an ARC4 cipher object
-
+        
         See also `new()` at the module level."""
 
-        if len(args)>0:
-            ndrop = args[0]
-            args = args[1:]
-        else:
-            ndrop = kwargs.pop('drop', 0)
-
-        expect_byte_string(key)
-
-        self._state = VoidPointer()
-        result = _raw_arc4_lib.ARC4_stream_init(key,
-                                                c_size_t(len(key)),
-                                                self._state.address_of())
-        if result != 0:
-            raise ValueError("Error %d while creating the ARC4 cipher"
-                             % result)
-        self._state = SmartPointer(self._state.get(),
-                                   _raw_arc4_lib.ARC4_stream_destroy)
-
-        if ndrop > 0:
-            # This is OK even if the cipher is used for decryption, since encrypt
-            # and decrypt are actually the same thing with ARC4.
-            self.encrypt(b('\x00') * ndrop)
-
-        self.block_size = 1
-        self.key_size = len(key)
+        self._cipher = _ARC4.new(key, *args, **kwargs)
+        self.block_size = self._cipher.block_size
+        self.key_size = self._cipher.key_size
 
     def encrypt(self, plaintext):
         """Encrypt a piece of data.
@@ -116,16 +87,7 @@ class ARC4Cipher:
         :Return: the encrypted data (byte string, as long as the
           plaintext).
         """
-
-        expect_byte_string(plaintext)
-        ciphertext = create_string_buffer(len(plaintext))
-        result = _raw_arc4_lib.ARC4_stream_encrypt(self._state.get(),
-                                         plaintext,
-                                         ciphertext,
-                                         c_size_t(len(plaintext)))
-        if result:
-            raise ValueError("Error %d while encrypting with RC4" % result)
-        return get_raw_buffer(ciphertext)
+        return self._cipher.encrypt(plaintext)
 
     def decrypt(self, ciphertext):
         """Decrypt a piece of data.
@@ -136,10 +98,7 @@ class ARC4Cipher:
         :Return: the decrypted data (byte string, as long as the
           ciphertext).
         """
-        try:
-            return self.encrypt(ciphertext)
-        except ValueError, e:
-            raise ValueError(str(e).replace("enc", "dec"))
+        return self._cipher.decrypt(ciphertext)
 
 def new(key, *args, **kwargs):
     """Create a new ARC4 cipher
@@ -149,17 +108,8 @@ def new(key, *args, **kwargs):
         The secret key to use in the symmetric cipher.
         It can have any length, with a minimum of 40 bytes.
         Its cryptograpic strength is always capped to 2048 bits (256 bytes).
-    :Keywords:
-      drop : integer
-        The amount of bytes to discard from the initial part of the keystream.
-        In fact, such part has been found to be distinguishable from random
-        data (while it shouldn't) and also correlated to key.
-
-        The recommended value is 3072_ bytes. The default value is 0.
 
     :Return: an `ARC4Cipher` object
-
-    .. _3072: http://eprint.iacr.org/2002/067.pdf
     """
     return ARC4Cipher(key, *args, **kwargs)
 

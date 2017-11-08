@@ -35,14 +35,17 @@ Crypto.Protocol
 Crypto.PublicKey
  Public-key encryption and signature algorithms (RSA, DSA)
 Crypto.Signature
- Public-key signature algorithms (RSA PKCS#1)
+ Public-key signature algorithms (RSA PKCS#1) 
 Crypto.Util
  Various useful modules and functions (long-to-string conversion, random number
  generation, number theoretic functions)
 """
 
-__all__ = ['Cipher', 'Hash', 'Protocol', 'PublicKey', 'Util', 'Signature',
-           'IO', 'Math']
+__all__ = ['Cipher', 'Hash', 'Protocol', 'PublicKey', 'Util', 'Signature']
 
-version_info = (3, 3, 1)
+__version__ = '2.6.1'     # See also below and setup.py
+__revision__ = "$Id$"
+
+# New software should look at this instead of at __version__ above.
+version_info = (2, 6, 1, 'final', 0)    # See also above and setup.py
 

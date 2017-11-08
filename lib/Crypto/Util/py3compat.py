@@ -58,6 +58,8 @@ tobytes(s)
     a byte string and make a byte string.
 """
 
+__revision__ = "$Id$"
+
 import sys
 
 if sys.version_info[0] == 2:
@@ -73,23 +75,14 @@ if sys.version_info[0] == 2:
         def tobytes(s):
             try:
                 return s.encode('latin-1')
-            except UnicodeError:
+            except:
                 return ''.join(s)
-        def tostr(bs):
-            return bs
     else:
         def tobytes(s):
             if isinstance(s, unicode):
                 return s.encode("latin-1")
             else:
                 return ''.join(s)
-        def tostr(bs):
-            return bs
-    def byte_string(s):
-        return isinstance(s, str)
-    # In Pyton 2.x, StringIO is a stand-alone module
-    from StringIO import StringIO as BytesIO
-    from sys import maxint
 else:
     def b(s):
        return s.encode("latin-1") # utf-8 would cause some side-effects we don't want
@@ -110,12 +103,5 @@ else:
                 return s.encode("latin-1")
             else:
                 return bytes(s)
-    def tostr(bs):
-        return bs.decode("latin-1")
-    def byte_string(s):
-        return isinstance(s, bytes)
-    # In Pyton 3.x, StringIO is a sub-module of io
-    from io import BytesIO
-    from sys import maxsize as maxint
 
 # vim:set ts=4 sw=4 sts=4 expandtab:

@@ -40,11 +40,17 @@ class CryptoRuntimeWarning(RuntimeWarning, CryptoWarning):
 # Warnings that we might actually use
 #
 
+class RandomPool_DeprecationWarning(CryptoDeprecationWarning):
+    """Issued when Crypto.Util.randpool.RandomPool is instantiated."""
+
 class ClockRewindWarning(CryptoRuntimeWarning):
     """Warning for when the system clock moves backwards."""
 
 class GetRandomNumber_DeprecationWarning(CryptoDeprecationWarning):
     """Issued when Crypto.Util.number.getRandomNumber is invoked."""
+
+class PowmInsecureWarning(CryptoRuntimeWarning):
+    """Warning for when _fastmath is built without mpz_powm_sec"""
 
 # By default, we want this warning to be shown every time we compensate for
 # clock rewinding.

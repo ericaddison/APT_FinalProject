@@ -24,7 +24,12 @@
 
 """Self-test suite for Crypto.Random.new()"""
 
+__revision__ = "$Id$"
+
 import unittest
+import sys
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
 class SimpleTest(unittest.TestCase):
@@ -128,7 +133,7 @@ class SimpleTest(unittest.TestCase):
             self.assertEqual(b('1') in z, True)
             self.assertRaises(TypeError, random.shuffle, b('12'))
         self.assertRaises(TypeError, random.shuffle, 1)
-        self.assertRaises(TypeError, random.shuffle, "11")
+        self.assertRaises(TypeError, random.shuffle, "1")
         self.assertRaises(TypeError, random.shuffle, (1,2))
         # 2to3 wraps a list() around it, alas - but I want to shoot
         # myself in the foot here! :D

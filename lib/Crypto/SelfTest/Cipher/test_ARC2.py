@@ -24,6 +24,10 @@
 
 """Self-test suite for Crypto.Cipher.ARC2"""
 
+__revision__ = "$Id$"
+
+from common import dict     # For compatibility with Python 2.1 and 2.2
+
 import unittest
 from Crypto.Util.py3compat import *
 
@@ -99,7 +103,7 @@ class BufferOverflowTest(unittest.TestCase):
 
     def runTest(self):
         """ARC2 with keylength > 128"""
-        key = b("x") * 16384
+        key = "x" * 16384
         mode = ARC2.MODE_ECB
         self.assertRaises(ValueError, ARC2.new, key, mode)
 
