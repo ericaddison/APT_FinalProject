@@ -10,8 +10,10 @@ $(document).ready(function(){
     var aud = "https://hailing-frequencies-2017.appspot.com/"
     var clientID = "JhKTQ3FyHLTEY3PPsQ6MQ8OXsUXuNXEN"
     var redirect_uri = "http://localhost:8080/api/callback"
+    var scope = "openid email profile"
 
-    var authUrl = "https://hailing-frequencies.auth0.com/authorize?scope="
+    var authUrl = "https://hailing-frequencies.auth0.com/authorize?"
+    authUrl += "&scope=" + encodeURIComponent(scope)
     authUrl += "&audience=" + encodeURIComponent(aud)
     authUrl += "&response_type=code"
     authUrl += "&client_id=" + encodeURIComponent(clientID)
