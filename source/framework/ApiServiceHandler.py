@@ -6,6 +6,18 @@ BAD_AUTH_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
 NOT_FOUND_RESPONSE = {'message': 'Wah wah, not found ;)', 'status': 404}
 
 
+def dummy_user():
+    """Get or create a dummy user for testing ... really should authenticate via token"""
+    user = Users.get_a_user(user_id=123456789)
+    if not user:
+        user = Users(email="test@example.com",
+                     fName="Testy",
+                     lName="Testerson",
+                     id=123456789)
+        user.put()
+    return user
+
+
 class ApiServiceHandler(BaseHandler):
     """Web handler to handle API endpoints"""
 
@@ -13,9 +25,7 @@ class ApiServiceHandler(BaseHandler):
         self.set_content_text_json()
 
         # dummy user for debug
-        user = Users(email="test@example.com",
-                     fName="Testy",
-                     lName="Testerson")
+        user = dummy_user()
 
         # authenticate user with required access_token
         #user = None

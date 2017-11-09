@@ -8,13 +8,19 @@ class Users(ndb.Model):
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
     prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
 
+    def get_id(self):
+        return long(self.key.id())
+
     def get_user_data_dict(self):
-        return {"id": self.key.id(),
+        return {"id": self.get_id(),
                 "email": self.email,
                 "fName": self.fName,
                 "lName": self.lName,
                 "joinDate": str(self.joinDate),
                 "prefComm": self.prefComm}
+
+    def delete(self):
+        self.key.delete()
 
     @classmethod
     def create(cls, email, fname, lname, prefcomm=""):
@@ -41,5 +47,5 @@ class Users(ndb.Model):
             user_query1 = user_query0.filter(Users.email == email)
             return user_query1.fetch()
         elif user_id:
-            return ndb.Key('Users', long(user_id)).fecth()
+            return ndb.Key('Users', long(user_id)).get()
         return None

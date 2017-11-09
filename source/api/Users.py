@@ -2,19 +2,23 @@ from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESP
 import source.framework.constants as c
 from source.models.Users import Users
 
+WRONG_USER_RESPONSE = {'message': 'Attempted to access non-self user', 'status': 403}
 
-def get_user(user):
+
+# [BEGIN API python methods]
+
+def get_user(user, user_id):
     """Get user settings"""
-    response = {}
-    response['user-settings'] = user.get_user_data_dict()
-    return response
+    if user.get_id() != user_id:
+        return WRONG_USER_RESPONSE
+    return {'user-settings': user.get_user_data_dict()}
 
 
-def update_user():
+def update_user(user, user_id):
     """Update user settings"""
-    response = {}
-    response['user-settings'] = "Updated user settings"
-    return response
+    if user.get_id() != user_id:
+        return WRONG_USER_RESPONSE
+    return {'user-settings': user.get_user_data_dict()}
 
 
 def create_user(email, fname, lname, prefcomm):
@@ -25,12 +29,16 @@ def create_user(email, fname, lname, prefcomm):
     return {'message': 'Email already in use', 'status': 403}
 
 
-def delete_user():
+def delete_user(user, user_id):
     """Delete a user"""
-    response = {}
-    response['user-settings'] = "Deleted user settings"
-    return response
+    if user.get_id() != user_id:
+        return WRONG_USER_RESPONSE
+    return {'message': 'Deleted user {}'.format(user_id)}
 
+# [END API python methods]
+
+
+# [BEGIN API handler]
 
 class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
@@ -38,19 +46,16 @@ class UsersApi(ApiServiceHandler):
     def get_hook(self, user, url_id):
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
-        return get_user(user)
+        return get_user(user, url_id)
 
     def put_hook(self, user, url_id):
         """Update user settings for a user"""
         # update user settings by parsing incoming parameters and
         # updating database
-        return update_user()
+        return update_user(user, url_id)
 
     def post_hook(self, user, url_id):
         """Create a new user"""
- 
-        print("I got url_id {} -- {}".format(url_id, (url_id != 0)))
-
         if url_id != 0:
             return NOT_FOUND_RESPONSE
 
@@ -70,4 +75,6 @@ class UsersApi(ApiServiceHandler):
     def delete_hook(self, user, url_id):
         """Delete a user"""
         # delete user info from database by email in the token info
-        return delete_user()
+        return delete_user(user, url_id)
+
+# [END API handler]
