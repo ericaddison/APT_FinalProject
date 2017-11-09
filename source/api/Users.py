@@ -11,7 +11,7 @@ def get_user(user, user_id):
     """Get user settings"""
     if user.get_id() != user_id:
         return WRONG_USER_RESPONSE
-    return {'user-settings': user.get_user_data_dict()}
+    return {'user-settings': user.get_user_data_dict(), 'status': "200"}
 
 
 def update_user(user, user_id, fname="", lname="", prefcomm=""):
@@ -26,7 +26,7 @@ def update_user(user, user_id, fname="", lname="", prefcomm=""):
     if prefcomm:
         user.prefComm = prefcomm
     user.commit()
-    return {'user-settings': user.get_user_data_dict()}
+    return {'user-settings': user.get_user_data_dict(), 'status': "200"}
 
 
 def create_user(email, fname, lname, prefcomm):
@@ -42,7 +42,7 @@ def delete_user(user, user_id):
     if user.get_id() != user_id:
         return WRONG_USER_RESPONSE
     user.delete()
-    return {'message': 'Deleted user {}'.format(user_id)}
+    return {'message': 'Deleted user {}'.format(user_id), 'status': "200"}
 
 # [END API python methods]
 
