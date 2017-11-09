@@ -1,11 +1,12 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler
+import source.framework.constants as c
 from source.models.Users import Users
 
 
-def get_user(email=""):
-    """Get user settings by email"""
+def get_user(user):
+    """Get user settings"""
     response = {}
-    response['user-settings'] = "User settings"
+    response['user-settings'] = user.get_user_data_dict()
     return response
 
 
@@ -16,11 +17,10 @@ def update_user():
     return response
 
 
-def create_user():
+def create_user(email, fname, lname, prefcomm):
     """Create a user"""
-    response = {}
-    response['user-settings'] = "Newly created user settings"
-    return response
+    user = Users.create(email, fname, lname, prefcomm)
+    return get_user(user)
 
 
 def delete_user():
@@ -36,7 +36,7 @@ class UsersApi(ApiServiceHandler):
     def get_hook(self, user):
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
-        return get_user()
+        return get_user(user)
 
     def put_hook(self, user):
         """Update user settings for a user"""
@@ -46,9 +46,19 @@ class UsersApi(ApiServiceHandler):
 
     def post_hook(self, user):
         """Create a new user"""
+
+        # dummy version, for now
+        fname = self.get_request_param(c.fname_parm)
+        lname = self.get_request_param(c.lname_parm)
+        email = self.get_request_param(c.email_parm)
+        prefcomm = self.get_request_param(c.prefcomm_parm)
+
+        print("handler: {}".format(self.get_request_parameter_dictionary()))
+
+        # real version should ....
         # retrieve user info from access token and store in database
         # store as an unverified user until email verification
-        return create_user()
+        return create_user(email, fname, lname, prefcomm)
 
     def delete_hook(self, user):
         """Delete a user"""
