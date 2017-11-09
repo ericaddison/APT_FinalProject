@@ -8,7 +8,8 @@ class Users(ndb.Model):
     prefComm = ndb.StringProperty() #Preferred Communication Method
 
     def get_user_data_dict(self):
-        return {"email": self.email,
+        return {"id": self.key.id(),
+                "email": self.email,
                 "fName": self.fName,
                 "lName": self.lName,
                 "joinDate": str(self.joinDate),
@@ -16,6 +17,9 @@ class Users(ndb.Model):
 
     @classmethod
     def create(cls, email, fname, lname, prefcomm=""):
+        if Users.get_a_user(email):
+            return None
+
         user = Users(email=email,
                      fName=fname,
                      lName=lname,
@@ -26,11 +30,15 @@ class Users(ndb.Model):
         return user
 
     @classmethod
-    def get_users(self):
+    def get_users(cls):
         return #list of all users
 
     @classmethod
-    def get_a_user(self, id):
-        #if (id is integer, then it's the userID)
-        #else (id is email)
-        return #details on a specific user
+    def get_a_user(cls, email=None, user_id=None):
+        if email:
+            user_query0 = Users.query()
+            user_query1 = user_query0.filter(Users.email == email)
+            return user_query1.fetch()
+        elif user_id:
+            return ndb.Key('Users', long(user_id)).fecth()
+        return None

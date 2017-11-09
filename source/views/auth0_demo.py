@@ -3,7 +3,6 @@ import urllib2
 import urllib
 import json
 from source.config.authentication import *
-import lib.jose as jose
 
 
 MAIN_PAGE_HTML = """\

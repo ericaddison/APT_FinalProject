@@ -6,6 +6,6 @@ from source.api.api_test import ApiTestCallback, ApiTestAuth
 app = make_routes([
     ('/api/callback', ApiTestCallback),
     ('/api/test', ApiTestAuth),
-    ('/api/conversations/.*', ConversationsApi),
-    ('/api/users/.*', UsersApi)
+    ('/api/conversations/(\d+)', ConversationsApi),
+    ('/api/users/(\d+)', UsersApi)
 ])

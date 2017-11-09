@@ -1,4 +1,4 @@
-from source.framework.ApiServiceHandler import ApiServiceHandler
+from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE
 import source.framework.constants as c
 from source.models.Users import Users
 
@@ -33,19 +33,22 @@ def delete_user():
 class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
 
-    def get_hook(self, user):
+    def get_hook(self, user, url_id):
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
         return get_user(user)
 
-    def put_hook(self, user):
+    def put_hook(self, user, url_id):
         """Update user settings for a user"""
         # update user settings by parsing incoming parameters and
         # updating database
         return update_user()
 
-    def post_hook(self, user):
+    def post_hook(self, user, url_id):
         """Create a new user"""
+
+        if url_id != 0:
+            return NOT_FOUND_RESPONSE
 
         # dummy version, for now
         fname = self.get_request_param(c.fname_parm)
@@ -60,7 +63,7 @@ class UsersApi(ApiServiceHandler):
         # store as an unverified user until email verification
         return create_user(email, fname, lname, prefcomm)
 
-    def delete_hook(self, user):
+    def delete_hook(self, user, url_id):
         """Delete a user"""
         # delete user info from database by email in the token info
         return delete_user()
