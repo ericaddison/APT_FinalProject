@@ -2,15 +2,15 @@ from google.appengine.ext import ndb
 
 class Conversations(ndb.Model):
     owner = ndb.KeyProperty(indexed=True, kind='Users')
-    name = ndb.StringProperty
-    password = ndb.StringProperty #bcrypt hash value
-    createDate = ndb.DateTimeProperty
-    destroyDate = ndb.DateTimeProperty
+    name = ndb.StringProperty()
+    password = ndb.StringProperty() #bcrypt hash value
+    createDate = ndb.DateTimeProperty()
+    destroyDate = ndb.DateTimeProperty()
     users = ndb.KeyProperty(repeated=True, kind='Users')
-    idPolicy = ndb.StringProperty #???
-    viewAfterExpire = ndb.BooleanProperty
-    revealOwner = ndb.BooleanProperty
-    restrictComms = ndb.StringProperty #???
+    idPolicy = ndb.StringProperty() #???
+    viewAfterExpire = ndb.BooleanProperty()
+    revealOwner = ndb.BooleanProperty()
+    restrictComms = ndb.StringProperty() #???
 
     def get_all_conversations(self):
         return #list of all conversations
