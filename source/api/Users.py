@@ -20,7 +20,9 @@ def update_user():
 def create_user(email, fname, lname, prefcomm):
     """Create a user"""
     user = Users.create(email, fname, lname, prefcomm)
-    return get_user(user)
+    if user:
+        return get_user(user)
+    return {'message': 'Email already in use', 'status': 403}
 
 
 def delete_user():
@@ -46,6 +48,8 @@ class UsersApi(ApiServiceHandler):
 
     def post_hook(self, user, url_id):
         """Create a new user"""
+ 
+        print("I got url_id {} -- {}".format(url_id, (url_id != 0)))
 
         if url_id != 0:
             return NOT_FOUND_RESPONSE

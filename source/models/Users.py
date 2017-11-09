@@ -1,11 +1,12 @@
 from google.appengine.ext import ndb
 
+
 class Users(ndb.Model):
     email = ndb.StringProperty(indexed=True)
-    fName = ndb.StringProperty()
-    lName = ndb.StringProperty()
+    fName = ndb.StringProperty(indexed=False)
+    lName = ndb.StringProperty(indexed=False)
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
-    prefComm = ndb.StringProperty() #Preferred Communication Method
+    prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
 
     def get_user_data_dict(self):
         return {"id": self.key.id(),
@@ -31,7 +32,7 @@ class Users(ndb.Model):
 
     @classmethod
     def get_users(cls):
-        return #list of all users
+        return Users.query().fetch()
 
     @classmethod
     def get_a_user(cls, email=None, user_id=None):
