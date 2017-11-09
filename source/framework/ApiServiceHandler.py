@@ -39,7 +39,7 @@ class ApiServiceHandler(BaseHandler):
         if not user:
             response = BAD_AUTH_RESPONSE
         else:
-            response = method(user, long(url_id))
+            response = method(user, url_id)
 
         if 'status' in response.keys():
             self.response.set_status(response['status'])

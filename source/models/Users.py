@@ -50,5 +50,8 @@ class Users(ndb.Model):
             user_query1 = user_query0.filter(Users.email == email)
             return user_query1.fetch()
         elif user_id:
-            return ndb.Key('Users', long(user_id)).get()
+            try:
+                return ndb.Key('Users', long(user_id)).get()
+            except ValueError:
+                pass
         return None
