@@ -55,9 +55,6 @@ class ApiServiceHandler(BaseHandler):
     def put(self, url_id):
         self.process(self.put_hook, url_id)
 
-    def patch(self, url_id):
-        self.process(self.patch_hook, url_id)
-
     def delete(self, url_id):
         self.process(self.delete_hook, url_id)
 
@@ -69,9 +66,6 @@ class ApiServiceHandler(BaseHandler):
 
     def put_hook(self, user, url_id):
         return self.notallowed_response('PUT')
-
-    def patch_hook(self, user, url_id):
-        return self.notallowed_response('PATCH')
 
     def delete_hook(self, user, url_id):
         return self.notallowed_response('DELETE')

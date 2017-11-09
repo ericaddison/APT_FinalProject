@@ -14,10 +14,18 @@ def get_user(user, user_id):
     return {'user-settings': user.get_user_data_dict()}
 
 
-def update_user(user, user_id):
+def update_user(user, user_id, fname="", lname="", prefcomm=""):
     """Update user settings"""
     if user.get_id() != user_id:
         return WRONG_USER_RESPONSE
+
+    if fname:
+        user.fName = fname
+    if lname:
+        user.lName = lname
+    if prefcomm:
+        user.prefComm = prefcomm
+    user.commit()
     return {'user-settings': user.get_user_data_dict()}
 
 
@@ -33,6 +41,7 @@ def delete_user(user, user_id):
     """Delete a user"""
     if user.get_id() != user_id:
         return WRONG_USER_RESPONSE
+    user.delete()
     return {'message': 'Deleted user {}'.format(user_id)}
 
 # [END API python methods]
@@ -50,9 +59,10 @@ class UsersApi(ApiServiceHandler):
 
     def put_hook(self, user, url_id):
         """Update user settings for a user"""
-        # update user settings by parsing incoming parameters and
-        # updating database
-        return update_user(user, url_id)
+        fname = self.get_request_param(c.fname_parm)
+        lname = self.get_request_param(c.lname_parm)
+        prefcomm = self.get_request_param(c.prefcomm_parm)
+        return update_user(user, url_id, fname, lname, prefcomm)
 
     def post_hook(self, user, url_id):
         """Create a new user"""

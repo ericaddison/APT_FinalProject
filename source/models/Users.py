@@ -19,6 +19,9 @@ class Users(ndb.Model):
                 "joinDate": str(self.joinDate),
                 "prefComm": self.prefComm}
 
+    def commit(self):
+        self.put()
+
     def delete(self):
         self.key.delete()
 
