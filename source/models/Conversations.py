@@ -9,6 +9,7 @@ class Conversations(ndb.Model):
     createDate = ndb.DateTimeProperty()
     destroyDate = ndb.DateTimeProperty(indexed=True)
     users = ndb.KeyProperty(repeated=True, kind='Users')
+    aliases = ndb.StringProperty(repeated=True)
     idPolicy = ndb.StringProperty() #???
     viewAfterExpire = ndb.BooleanProperty()
     revealOwner = ndb.BooleanProperty()
@@ -21,6 +22,24 @@ class Conversations(ndb.Model):
         #use bcrypt to check pw hash param against stored
         #conversation password value
         return False
+
+    def get_id(self):
+        return long(self.key.id())
+
+    def get_public_data_dict(self):
+        return {'id': self.get_id(),
+                'name': self.name}
+
+    def get_full_data(self):
+        return {'id': self.get_id(),
+                'name': self.name,
+                'createDate': str(self.createDate),
+                'destroyDate': str(self.destroyDate),
+                'aliases': self.aliases,
+                'idPolicy': self.idPolicy,
+                'viewAfterExpire': self.viewAfterExpire,
+                'revealOwner': self.revealOwner,
+                'restrictComms': self.restrictComms}
 
     @classmethod
     def get_all_conversations(self):
