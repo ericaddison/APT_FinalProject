@@ -56,7 +56,7 @@ def delete_message(user, conv_id, message_id):
 
 # [BEGIN API handler]
 
-class ConversationMessagesApi(ApiServiceHandler):
+class ConvMessagesApi(ApiServiceHandler):
     """REST API handler to allow interaction with messages"""
 
     def get_hook(self, user, *args):

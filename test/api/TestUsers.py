@@ -8,6 +8,7 @@ user = dummy_user()
 
 # learn how to mock!
 
+
 class TestApiMethods(unittest.TestCase):
 
     def test_get_user_success(self):
