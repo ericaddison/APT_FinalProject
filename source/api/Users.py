@@ -9,14 +9,14 @@ WRONG_USER_RESPONSE = {'message': 'Attempted to access non-self user', 'status':
 
 def get_user(user, user_id):
     """Get user settings"""
-    if user.get_id() != user_id:
+    if user.get_id() != long(user_id):
         return WRONG_USER_RESPONSE
     return {'user-settings': user.get_user_data_dict(), 'status': "200"}
 
 
 def update_user(user, user_id, fname="", lname="", prefcomm=""):
     """Update user settings"""
-    if user.get_id() != user_id:
+    if user.get_id() != long(user_id):
         return WRONG_USER_RESPONSE
 
     if fname:
@@ -39,7 +39,7 @@ def create_user(email, fname, lname, prefcomm):
 
 def delete_user(user, user_id):
     """Delete a user"""
-    if user.get_id() != user_id:
+    if user.get_id() != long(user_id):
         return WRONG_USER_RESPONSE
     user.delete()
     return {'message': 'Deleted user {}'.format(user_id), 'status': "200"}
@@ -52,21 +52,21 @@ def delete_user(user, user_id):
 class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
 
-    def get_hook(self, user, url_id):
+    def get_hook(self, user, *args):
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
-        return get_user(user, url_id)
+        return get_user(user, args[0])
 
-    def put_hook(self, user, url_id):
+    def put_hook(self, user, *args):
         """Update user settings for a user"""
         fname = self.get_request_param(c.fname_parm)
         lname = self.get_request_param(c.lname_parm)
         prefcomm = self.get_request_param(c.prefcomm_parm)
-        return update_user(user, url_id, fname, lname, prefcomm)
+        return update_user(user, args[0], fname, lname, prefcomm)
 
-    def post_hook(self, user, url_id):
+    def post_hook(self, user, *args):
         """Create a new user"""
-        if url_id != 0:
+        if args[0]:
             return NOT_FOUND_RESPONSE
 
         # dummy version, for now
@@ -75,16 +75,14 @@ class UsersApi(ApiServiceHandler):
         email = self.get_request_param(c.email_parm)
         prefcomm = self.get_request_param(c.prefcomm_parm)
 
-        print("handler: {}".format(self.get_request_parameter_dictionary()))
-
         # real version should ....
         # retrieve user info from access token and store in database
         # store as an unverified user until email verification
         return create_user(email, fname, lname, prefcomm)
 
-    def delete_hook(self, user, url_id):
+    def delete_hook(self, user, *args):
         """Delete a user"""
         # delete user info from database by email in the token info
-        return delete_user(user, url_id)
+        return delete_user(user, args[0])
 
 # [END API handler]
