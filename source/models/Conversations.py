@@ -1,12 +1,12 @@
 from google.appengine.ext import ndb
-import datetime
-
+from datetime import datetime
+import random
 
 class Conversations(ndb.Model):
     owner = ndb.KeyProperty(indexed=True, kind='Users')
     name = ndb.StringProperty()
     password = ndb.StringProperty() #bcrypt hash value
-    createDate = ndb.DateTimeProperty()
+    createDate = ndb.DateTimeProperty(auto_now_add=True)
     destroyDate = ndb.DateTimeProperty(indexed=True)
     users = ndb.KeyProperty(repeated=True, kind='Users')
     aliases = ndb.StringProperty(repeated=True)
@@ -42,18 +42,52 @@ class Conversations(ndb.Model):
                 'restrictComms': self.restrictComms}
 
     @classmethod
-    def get_all_conversations(self):
+    def get_all_conversations(cls):
         return Conversations.query().fetch()
 
     @classmethod
-    def get_all_active_conversations(self):
-        return Conversations.query(Conversations.destroyDate > datetime.datetime.now())
+    def get_all_active_conversations(cls):
+        return Conversations.query(Conversations.destroyDate > datetime.now())
 
     @classmethod
-    def get_conversation_by_id(self, convID):
+    def get_conversation_by_id(cls, convID):
         return ndb.Key('Conversations', long(convID)).get()
 
     @classmethod
-    def get_conversation_by_owner(self, ownerID):
+    def get_conversation_by_owner(cls, ownerID):
         return ndb.query(Conversations.owner == ownerID)
 
+    @classmethod
+    def get_conversations_by_name(cls, name):
+        query0 = Conversations.query()
+        query1 = query0.filter(Conversations.name == name)
+        query2 = query1.filter(Conversations.destroyDate > datetime.now())
+        return query2.fetch()
+
+    @classmethod
+    def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
+
+        if cls.get_conversations_by_name(name):
+            return None
+
+        conv = Conversations(owner=owner.key,
+                             name=name,
+                             destroyDate=destroy_date,
+                             password=password_hash,
+                             idPolicy=id_policy,
+                             viewAfterExpire=view_after_expire,
+                             revealOwner=reveal_owner,
+                             restrictComms=restrict_comms)
+        conv.put()
+        return conv
+
+    @classmethod
+    def random_name(cls):
+        good_name = False
+        while not good_name:
+            name = "conversation{}".format(random.randint(100000000000, 999999999999))
+            good_name = (len(cls.get_conversations_by_name(name)) == 0)
+        return name
+
+
+id_policies = ["real_names", "user_alias", "colors", "numbers", "animals"]

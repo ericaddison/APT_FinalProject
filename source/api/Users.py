@@ -66,7 +66,7 @@ class UsersApi(ApiServiceHandler):
 
     def post_hook(self, user, url_id):
         """Create a new user"""
-        if url_id != 0:
+        if url_id != "":
             return NOT_FOUND_RESPONSE
 
         # dummy version, for now
@@ -74,8 +74,6 @@ class UsersApi(ApiServiceHandler):
         lname = self.get_request_param(c.lname_parm)
         email = self.get_request_param(c.email_parm)
         prefcomm = self.get_request_param(c.prefcomm_parm)
-
-        print("handler: {}".format(self.get_request_parameter_dictionary()))
 
         # real version should ....
         # retrieve user info from access token and store in database
