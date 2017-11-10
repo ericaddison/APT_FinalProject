@@ -2,9 +2,11 @@ from google.appengine.ext import ndb
 from datetime import datetime
 import random
 
+
 class Conversations(ndb.Model):
     owner = ndb.KeyProperty(indexed=True, kind='Users')
     name = ndb.StringProperty()
+    messages = ndb.KeyProperty(kind='ConvMessages', repeated=True)
     password = ndb.StringProperty() #bcrypt hash value
     createDate = ndb.DateTimeProperty(auto_now_add=True)
     destroyDate = ndb.DateTimeProperty(indexed=True)
@@ -44,8 +46,17 @@ class Conversations(ndb.Model):
     def has_user(self, user):
         return user.key in self.users or user.key == self.owner
 
-    def get_messages(self):
-        return "all the messages :)"
+    def get_messages_basic_data(self):
+        msgs = ndb.get_multi(self.messages)
+        return [msg.get_basic_data() for msg in msgs]
+
+    def get_messages_full_data(self):
+        msgs = ndb.get_multi(self.messages)
+        return [msg.get_full_data() for msg in msgs]
+
+    def put_message(self, msg):
+        self.messages.append(msg.key)
+        self.put()
 
     @classmethod
     def get_all_conversations(cls):

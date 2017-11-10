@@ -1,8 +1,6 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE, NOT_AUTH_RESPONSE
-import source.framework.constants as c
-from source.models.Conversations import Conversations, id_policies
-from datetime import datetime
-import time
+from source.models.Conversations import Conversations
+from source.models.ConvMessages import ConvMessages
 
 
 # [BEGIN API python methods]
@@ -13,7 +11,7 @@ def get_messages(user, conv_id):
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
         if conv.has_user(user):
-            response['messages'] = conv.get_messages()
+            response['messages'] = conv.get_messages_full_data()
         else:
             return NOT_AUTH_RESPONSE
     else:
@@ -21,7 +19,7 @@ def get_messages(user, conv_id):
     return response
 
 
-def create_message(user, conv_id, message_text, media_url):
+def create_message(user, conv_id, text, media_url):
     """Create a new message"""
     # check user authorization
     # check_user_auth()...
@@ -29,9 +27,10 @@ def create_message(user, conv_id, message_text, media_url):
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
         if conv.has_user(user):
-            # create a new message, add to conv if needed
-            message = message_text
-            response['messages'] = "Your new message: {}".format(message_text)
+            user_alias = "Mr. Black"
+            msg = ConvMessages.create(user, user_alias, conv, text, media_url)
+            conv.put_message(msg)
+            response['messages'] = msg.get_full_data()
         else:
             return NOT_AUTH_RESPONSE
     else:
@@ -66,9 +65,9 @@ class ConversationMessagesApi(ApiServiceHandler):
 
     def post_hook(self, user, *args):
         """Create message API"""
-        if args[2]:
+        if args[1]:
             return NOT_FOUND_RESPONSE
-        return create_message(args[0])
+        return create_message(user, args[0], "hello", "")
 
     def put_hook(self, user, *args):
         """Update message API"""

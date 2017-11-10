@@ -1,4 +1,5 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE
+from source.config.defaults import DEFAULT_CONVERSATION_LIFETIME_SECONDS
 import source.framework.constants as c
 from source.models.Conversations import Conversations, id_policies
 from datetime import datetime
@@ -32,8 +33,11 @@ def create_conversation(user, name, destroy_date, id_policy, view_after_expire, 
     # default values
     name = name if name else Conversations.random_name()
     id_policy = id_policy if id_policy in id_policies else "colors"
-    destroy_date = destroy_date if destroy_date else datetime.fromtimestamp(time.time()+90*24*3600)
-    destroy_date = destroy_date if destroy_date>datetime.now() else datetime.fromtimestamp(time.time()+90*24*3600)
+
+    three_months = datetime.fromtimestamp(time.time()+DEFAULT_CONVERSATION_LIFETIME_SECONDS)
+    destroy_date = destroy_date if destroy_date else three_months
+    destroy_date = destroy_date if destroy_date>datetime.now() else three_months
+
     view_after_expire = False if view_after_expire.lower() == 'false' else True
     reveal_owner = False if reveal_owner.lower() == 'false' else True
     restrict_comms = restrict_comms if restrict_comms else ""
