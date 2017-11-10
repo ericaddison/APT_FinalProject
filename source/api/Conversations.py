@@ -4,15 +4,21 @@ from source.models.Conversations import Conversations, id_policies
 from datetime import datetime
 import time
 
+
 # [BEGIN API python methods]
 
 def get_conversations(user, conv_id):
     """Get conversations by name, or get all conversations if no names provided"""
     response = {}
     if conv_id == "":
-        response['conversations'] = "All conversations"
+        response['conversations'] = Conversations.get_all_active_conversations_basic_data()
     else:
-        response['conversations'] = "Requested conversations: {}".format(conv_id)
+        conv = Conversations.get_conversation_by_id(conv_id)
+        if conv:
+            if conv.has_user(user):
+                response['conversations'] = conv.get_full_data()
+            else:
+                response['conversations'] = conv.get_basic_data()
     return response
 
 

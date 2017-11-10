@@ -26,7 +26,7 @@ class Conversations(ndb.Model):
     def get_id(self):
         return long(self.key.id())
 
-    def get_public_data_dict(self):
+    def get_basic_data(self):
         return {'id': self.get_id(),
                 'name': self.name}
 
@@ -41,9 +41,16 @@ class Conversations(ndb.Model):
                 'revealOwner': self.revealOwner,
                 'restrictComms': self.restrictComms}
 
+    def has_user(self, user):
+        return user.key in self.users or user.key == self.owner
+
     @classmethod
     def get_all_conversations(cls):
         return Conversations.query().fetch()
+
+    @classmethod
+    def get_all_active_conversations_basic_data(cls):
+        return [conv.get_basic_data() for conv in cls.get_all_active_conversations()]
 
     @classmethod
     def get_all_active_conversations(cls):
