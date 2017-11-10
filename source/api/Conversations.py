@@ -9,7 +9,7 @@ import time
 
 def get_conversations(user, conv_id):
     """Get conversations by name, or get all conversations if no names provided"""
-    response = {}
+    response = {'status': 200}
     if conv_id == "":
         response['conversations'] = Conversations.get_all_active_conversations_basic_data()
     else:
@@ -19,6 +19,8 @@ def get_conversations(user, conv_id):
                 response['conversations'] = conv.get_full_data()
             else:
                 response['conversations'] = conv.get_basic_data()
+        else:
+            return NOT_FOUND_RESPONSE
     return response
 
 
@@ -70,13 +72,13 @@ def delete_conversation(user, conv_id):
 class ConversationsApi(ApiServiceHandler):
     """REST API handler to allow interaction with conversation data"""
 
-    def get_hook(self, user, url_id):
+    def get_hook(self, user, *args):
         """Get conversation data API"""
-        return get_conversations(user, url_id)
+        return get_conversations(user, args[0])
 
-    def post_hook(self, user, url_id):
+    def post_hook(self, user, *args):
         """Create conversation data API"""
-        if url_id != "":
+        if args[0]:
             return NOT_FOUND_RESPONSE
 
         # dummy version, for now
@@ -93,12 +95,12 @@ class ConversationsApi(ApiServiceHandler):
                                    view_after_expire, reveal_owner,
                                    restrict_comms, password)
 
-    def put_hook(self, user, url_id):
+    def put_hook(self, user, *args):
         """Update conversation API"""
-        return update_conversation(user, url_id)
+        return update_conversation(user, args[0])
 
-    def delete_hook(self, user, url_id):
+    def delete_hook(self, user, *args):
         """Delete conversation API"""
-        return delete_conversation(user, url_id)
+        return delete_conversation(user, args[0])
 
 # [END API handler]

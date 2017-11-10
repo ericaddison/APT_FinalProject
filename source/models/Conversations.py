@@ -44,6 +44,9 @@ class Conversations(ndb.Model):
     def has_user(self, user):
         return user.key in self.users or user.key == self.owner
 
+    def get_messages(self):
+        return "all the messages :)"
+
     @classmethod
     def get_all_conversations(cls):
         return Conversations.query().fetch()
