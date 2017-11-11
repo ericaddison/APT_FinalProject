@@ -61,6 +61,12 @@ class Conversations(ndb.Model):
         self.messages.append(msg.key)
         self.put()
 
+    def get_alias_for_user(self, user):
+        cuser = ConvUsers.query()
+        cuser = cuser.filter(ConvUsers.convID == self.key)
+        cuser = cuser.filter(ConvUsers.userID == user.key)
+        return cuser.get()
+
     @classmethod
     def get_all_conversations(cls):
         return Conversations.query().fetch()
@@ -108,6 +114,7 @@ class Conversations(ndb.Model):
                              restrictComms=restrict_comms)
 
         # set owner alias
+        conv.put()
         cuser = ConvUsers.create(owner, conv, colors_policy)
         conv.aliases.append(cuser.key)
         conv.put()

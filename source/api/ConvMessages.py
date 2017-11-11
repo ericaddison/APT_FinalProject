@@ -27,7 +27,7 @@ def create_message(user, conv_id, text, media_url):
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
         if conv.has_user(user):
-            user_alias = "Mr. Black"
+            user_alias = conv.get_alias_for_user(user).displayName
             msg = ConvMessages.create(user, user_alias, conv, text, media_url)
             conv.put_message(msg)
             response['messages'] = msg.get_full_data()

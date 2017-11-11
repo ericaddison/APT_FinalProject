@@ -11,7 +11,7 @@ def process_response(url, r):
 
 # make a new conversation
 url = 'http://localhost:8080/api/conversations/'
-r = req.post(url, data={"conv_name": "Demo Conversation2"})
+r = req.post(url, data={"conv_name": "Demo Conversation3"})
 print(r)
 r0 = process_response(url, r)
 conv_id = r0['conversations']['id']
