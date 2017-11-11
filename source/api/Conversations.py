@@ -43,16 +43,21 @@ def create_conversation(user, name, destroy_date, id_policy, view_after_expire, 
     restrict_comms = restrict_comms if restrict_comms else ""
     password_hash = password_hash if password_hash else ""
 
-    conv = Conversations.create(name=name,
-                                owner=user,
-                                destroy_date=destroy_date,
-                                id_policy=id_policy,
-                                view_after_expire=view_after_expire,
-                                reveal_owner=reveal_owner,
-                                restrict_comms=restrict_comms,
-                                password_hash=password_hash)
+    status, conv = Conversations.create(name=name,
+                                        owner=user,
+                                        destroy_date=destroy_date,
+                                        id_policy=id_policy,
+                                        view_after_expire=view_after_expire,
+                                        reveal_owner=reveal_owner,
+                                        restrict_comms=restrict_comms,
+                                        password_hash=password_hash)
 
-    return {'conversations': conv.get_full_data(), 'status': 200}
+    if status:
+        return {'conversations': conv.get_full_data(), 'status': 200}
+    else:
+        return {'message': 'Conversation name already taken',
+                'conversations': conv.get_basic_data(),
+                'status': 403}
 
 
 def update_conversation(user, conv_id):

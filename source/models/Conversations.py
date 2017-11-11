@@ -91,8 +91,9 @@ class Conversations(ndb.Model):
     @classmethod
     def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
 
-        if cls.get_conversations_by_name(name):
-            return None
+        conv = cls.get_conversations_by_name(name)
+        if conv:
+            return False, conv[0]
 
         # hard-coded colors policy for now
         id_policy = colors_policy['name']
@@ -110,7 +111,7 @@ class Conversations(ndb.Model):
         cuser = ConvUsers.create(owner, conv, colors_policy)
         conv.aliases.append(cuser.key)
         conv.put()
-        return conv
+        return True, conv
 
     @classmethod
     def random_name(cls):
