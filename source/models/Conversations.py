@@ -1,5 +1,7 @@
 from google.appengine.ext import ndb
 from datetime import datetime
+from source.models.ConvUsers import ConvUsers
+from source.models.id_policies import colors_policy
 import random
 
 
@@ -11,14 +13,15 @@ class Conversations(ndb.Model):
     createDate = ndb.DateTimeProperty(auto_now_add=True)
     destroyDate = ndb.DateTimeProperty(indexed=True)
     users = ndb.KeyProperty(repeated=True, kind='Users')
-    aliases = ndb.StringProperty(repeated=True)
+    aliases = ndb.KeyProperty(kind='ConvUsers', repeated=True)
     idPolicy = ndb.StringProperty() #???
     viewAfterExpire = ndb.BooleanProperty()
     revealOwner = ndb.BooleanProperty()
     restrictComms = ndb.StringProperty() #???
 
-    def get_conversation_users(self):
-        return self.users
+    def get_aliases(self):
+        aliases = ndb.get_multi(self.aliases)
+        return [alias.displayName for alias in aliases]
 
     def check_conversation_password(self, convID, passwordHash):
         #use bcrypt to check pw hash param against stored
@@ -37,7 +40,7 @@ class Conversations(ndb.Model):
                 'name': self.name,
                 'createDate': str(self.createDate),
                 'destroyDate': str(self.destroyDate),
-                'aliases': self.aliases,
+                'aliases': self.get_aliases(),
                 'idPolicy': self.idPolicy,
                 'viewAfterExpire': self.viewAfterExpire,
                 'revealOwner': self.revealOwner,
@@ -91,6 +94,9 @@ class Conversations(ndb.Model):
         if cls.get_conversations_by_name(name):
             return None
 
+        # hard-coded colors policy for now
+        id_policy = colors_policy['name']
+
         conv = Conversations(owner=owner.key,
                              name=name,
                              destroyDate=destroy_date,
@@ -99,6 +105,10 @@ class Conversations(ndb.Model):
                              viewAfterExpire=view_after_expire,
                              revealOwner=reveal_owner,
                              restrictComms=restrict_comms)
+
+        # set owner alias
+        cuser = ConvUsers.create(owner, conv, colors_policy)
+        conv.aliases.append(cuser.key)
         conv.put()
         return conv
 
