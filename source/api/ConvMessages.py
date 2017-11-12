@@ -1,6 +1,7 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE, NOT_AUTH_RESPONSE
 from source.models.Conversations import Conversations
 from source.models.ConvMessages import ConvMessages
+import source.framework.constants as c
 
 
 # [BEGIN API python methods]
@@ -67,7 +68,9 @@ class ConvMessagesApi(ApiServiceHandler):
         """Create message API"""
         if args[1]:
             return NOT_FOUND_RESPONSE
-        return create_message(user, args[0], "hello", "")
+        text = self.get_request_param(c.text_param)
+        media_url = self.get_request_param(c.media_url_param)
+        return create_message(user, args[0], text, media_url)
 
     def put_hook(self, user, *args):
         """Update message API"""
