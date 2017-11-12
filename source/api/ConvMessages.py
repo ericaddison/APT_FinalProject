@@ -10,7 +10,7 @@ def get_messages(user, conv_id):
     response = {'status': 200}
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
-        if conv.has_user(user):
+        if conv.has_active_user(user):
             response['messages'] = conv.get_messages_full_data()
         else:
             return NOT_AUTH_RESPONSE
@@ -26,8 +26,8 @@ def create_message(user, conv_id, text, media_url):
     response = {'status': 200}
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
-        if conv.has_user(user):
-            user_alias = conv.get_alias_for_user(user).displayName
+        if conv.has_active_user(user):
+            user_alias = conv.get_alias_for_user(user)
             msg = ConvMessages.create(user, user_alias, conv, text, media_url)
             conv.put_message(msg)
             response['messages'] = msg.get_full_data()
