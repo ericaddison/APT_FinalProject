@@ -57,13 +57,24 @@ class Users(ndb.Model):
         return None
 
     @classmethod
-    def dummy_user(cls):
+    def dummy_user(cls, dummyid=1):
         """Get or create a dummy user for testing ... really should authenticate via token"""
-        user = Users.get_a_user(user_id=123456789)
-        if not user:
-            user = Users(email="test@example.com",
-                         fName="Testy",
-                         lName="Testerson",
-                         id=123456789)
-            user.put()
-        return user
+        if dummyid == 1:
+            user = Users.get_a_user(user_id=123456789)
+            if not user:
+                user = Users(email="test@example.com",
+                             fName="Testy",
+                             lName="Testerson",
+                             id=123456789)
+                user.put()
+            return user
+        else:
+            user = Users.get_a_user(user_id=987654321)
+            if not user:
+                user = Users(email="serious@example.com",
+                             fName="Lemon",
+                             lName="Zest",
+                             id=987654321)
+                user.put()
+            return user
+

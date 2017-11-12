@@ -4,6 +4,7 @@ import lib.jwt as jwt
 from lib.jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
 from source.config.authentication import *
+from source.models.Users import Users
 
 
 #jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
@@ -31,12 +32,16 @@ def user_authentication(auth_header):
 def get_user_from_token(access_token):
     if AUTH_PROVIDER == auth_auth0:
         return get_user_from_token_auth0(access_token)
+    elif AUTH_PROVIDER == auth_demo:
+        return get_user_from_token_debug(access_token)
 
 
 def verify_token(access_token):
     print("Attempting to verify {0} access_token {1}".format(AUTH_PROVIDER, access_token))
     if AUTH_PROVIDER == auth_auth0:
         return verify_token_auth0(access_token)
+    elif AUTH_PROVIDER == auth_demo:
+        return verify_token_debug(access_token)
 
 
 # verify token and return boolean success
@@ -90,3 +95,16 @@ def get_user_from_token_auth0(access_token):
     #return get_user_from_email(data.email)
     print("get_user_from_token(): Failed to find user");
     return None
+
+
+def get_user_from_token_debug(access_token):
+    if access_token == 'DEVTOKEN1':
+        return Users.dummy_user(1)
+    elif access_token == 'DEVTOKEN2':
+        return Users.dummy_user(2)
+
+
+def verify_token_debug(access_token):
+    if access_token in ['DEVTOKEN1', 'DEVTOKEN2']:
+        return True
+    return False

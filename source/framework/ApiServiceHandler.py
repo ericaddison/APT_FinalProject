@@ -14,15 +14,15 @@ class ApiServiceHandler(BaseHandler):
         self.set_content_text_json()
 
         # dummy user for debug
-        user = Users.dummy_user()
+        #user = Users.dummy_user()
 
         # authenticate user with required access_token
-        #user = None
-        #auth_header = self.get_auth_header()
-        #if auth_header:
-        #    user = user_authentication(auth_header)
-        #else:
-        #    print("ApiServiceHandler.process(): no auth_header found")
+        user = None
+        auth_header = self.get_auth_header()
+        if auth_header:
+           user = user_authentication(auth_header)
+        else:
+           print("ApiServiceHandler.process(): no auth_header found")
 
         # if user not verified or found, return bad response
         if not user:

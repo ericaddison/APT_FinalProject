@@ -1,6 +1,8 @@
 auth_auth0 = "auth0"
 auth_firebase = "firebase"
-AUTH_PROVIDER = auth_auth0
+auth_demo = "demo"
+
+AUTH_PROVIDER = auth_demo
 
 
 # [BEGIN auth0 account info]
