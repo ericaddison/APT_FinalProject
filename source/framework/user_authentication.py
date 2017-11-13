@@ -6,8 +6,14 @@ from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
 from source.config.authentication import *
 from source.models.Users import Users
 
+#appengine_config.py includes these from the lib directory
 import google.auth.transport.requests
 import google.oauth2.id_token
+
+#Apparently the current version of requests is wonky are requires the monkeypatch to
+#authenticate the firebase tokens
+import requests_toolbelt.adapters.appengine
+requests_toolbelt.adapters.appengine.monkeypatch()
 
 
 #jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
@@ -15,8 +21,6 @@ import google.oauth2.id_token
 
 def user_authentication(auth_header):
     user = None
-
-    print("auth_header = ", auth_header)
 
     parts = auth_header.split()
     if len(parts) != 2:
@@ -30,6 +34,7 @@ def user_authentication(auth_header):
     access_token = parts[1]
 
     if verify_token(access_token):
+        print("***Firebase User Verified")
         user = get_user_from_token(access_token)
     return user
 
