@@ -10,7 +10,7 @@ from source.models.Users import Users
 import google.auth.transport.requests
 import google.oauth2.id_token
 
-#Apparently the current version of requests is wonky are requires the monkeypatch to
+#Apparently the current version of requests is wonky and requires the monkeypatch to
 #authenticate the firebase tokens
 import requests_toolbelt.adapters.appengine
 requests_toolbelt.adapters.appengine.monkeypatch()
@@ -69,6 +69,7 @@ def verify_token_firebase(access_token):
     claims = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     if not claims:
         return False
+    print "***Firebase Auth Reply: ", claims
     return True
 
 
@@ -133,6 +134,12 @@ def get_user_from_token_debug(access_token):
 
 
 def get_user_from_token_firebase(access_token):
-    #TODO: Patrick fill in here
-    #Added token field to Users, query Users with access_token to retreive user
-    return None
+    userDict = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
+    emailAddy = userDict.get('email')
+    userAcct =  Users.get_a_user(emailAddy)
+    print "***userAcct: ", userAcct
+    if userAcct:
+        return userAcct
+    else:
+        return None
+

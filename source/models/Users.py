@@ -7,7 +7,6 @@ class Users(ndb.Model):
     lName = ndb.StringProperty(indexed=False)
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
     prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
-    token = ndb.StringProperty(indexed=True) #Access Token
 
 
     def get_id(self):
