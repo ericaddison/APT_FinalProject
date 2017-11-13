@@ -67,7 +67,7 @@ class Conversations(ndb.Model):
 
     def get_messages_full_data(self):
         msgs = ndb.get_multi(self.messages)
-        return [msg.get_full_data() for msg in msgs]
+        return [msg.get_full_data() for msg in msgs if not msg.deleted]
 
     def put_message(self, msg):
         self.messages.append(msg.key)

@@ -31,8 +31,6 @@ def get_conversations(user, conv_id):
 
 def create_conversation(user, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
     """Create a new conversation"""
-    # check user authorization
-    # check_user_auth()...
 
     # default values
     name = name if name else Conversations.random_name()

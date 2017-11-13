@@ -31,7 +31,7 @@ def create_convuser(user, conv_id):
 def delete_convuser(user, conv_id):
     """Delete a convuser (user leave a conversation)"""
 
-    # method to call if valid conversation
+    # method to call if user is part of the conversation
     def remove_user(user, conv, response):
         cuser = conv.remove_user(user)
         if cuser:
