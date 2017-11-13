@@ -3,7 +3,7 @@ from source.views.Main import LandingPage
 from auth0_demo import Auth0LoginCallback, Auth0MainPage
 from source.views.Login import LoginPage
 from source.views.Manage import ManagePage
-from source.views.AjaxStuff import GetUserInfo
+from source.framework.user_authentication import user_authentication
 
 app = make_routes([
     # [START auth0 demo]
@@ -13,7 +13,7 @@ app = make_routes([
 
     # [START services]
 
-    ('/services/getuserinfo', GetUserInfo),
+    ('/services/getuserinfo', user_authentication),
 
 
     # [END services]

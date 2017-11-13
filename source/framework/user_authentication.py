@@ -6,12 +6,17 @@ from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
 from source.config.authentication import *
 from source.models.Users import Users
 
+import google.auth.transport.requests
+import google.oauth2.id_token
+
 
 #jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
 #jwt.register_algorithm('ES256', ECAlgorithm(ECAlgorithm.SHA256))
 
 def user_authentication(auth_header):
     user = None
+
+    print("auth_header = ", auth_header)
 
     parts = auth_header.split()
     if len(parts) != 2:
@@ -56,8 +61,10 @@ def verify_token_debug(access_token):
 
 # verify token and return boolean success
 def verify_token_firebase(access_token):
-    #TODO: Patrick fill in here
-    return False
+    claims = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
+    if not claims:
+        return False
+    return True
 
 
 # verify token and return boolean success
@@ -122,4 +129,5 @@ def get_user_from_token_debug(access_token):
 
 def get_user_from_token_firebase(access_token):
     #TODO: Patrick fill in here
+    #Added token field to Users, query Users with access_token to retreive user
     return None
