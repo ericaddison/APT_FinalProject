@@ -2,7 +2,7 @@ from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESP
 from source.models.Conversations import Conversations
 from source.models.ConvMessages import ConvMessages
 import source.framework.constants as c
-
+from source.framework.communicate import broadcast_message
 
 # [BEGIN API python methods]
 
@@ -31,6 +31,10 @@ def create_message(user, conv_id, text, media_url):
             user_alias = conv.get_alias_for_user(user)
             msg = ConvMessages.create(user, user_alias, conv, text, media_url)
             conv.put_message(msg)
+
+            # send new msg to all users in this conv
+            broadcast_message(msg)
+
             response['messages'] = msg.get_full_data()
         else:
             return NOT_AUTH_RESPONSE

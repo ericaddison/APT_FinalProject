@@ -1,6 +1,5 @@
 from source.framework.BaseHandler import BaseHandler
 from source.framework.user_authentication import user_authentication
-from source.models.Users import Users
 
 BAD_AUTH_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
 NOT_AUTH_RESPONSE = {'status': 401, 'message': 'Not authorized'}
