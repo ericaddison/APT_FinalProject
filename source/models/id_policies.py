@@ -19,4 +19,5 @@ def get_name(conv, policy):
         if ind > len(names):
             name += nameind
             nameind += 1
+        ind += 1
     return name

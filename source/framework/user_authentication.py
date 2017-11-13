@@ -15,11 +15,11 @@ def user_authentication(auth_header):
 
     parts = auth_header.split()
     if len(parts) != 2:
-        print("user_authentication(): improper authorization header length");
+        print("user_authentication(): improper authorization header length")
         return None
 
     if parts[0].lower() != 'bearer':
-        print("user_authentication(): not a bearer header");
+        print("user_authentication(): not a bearer header")
         return None
 
     access_token = parts[1]
@@ -34,6 +34,8 @@ def get_user_from_token(access_token):
         return get_user_from_token_auth0(access_token)
     elif AUTH_PROVIDER == auth_demo:
         return get_user_from_token_debug(access_token)
+    elif AUTH_PROVIDER == auth_firebase:
+        return get_user_from_token_firebase(access_token)
 
 
 def verify_token(access_token):
@@ -42,6 +44,20 @@ def verify_token(access_token):
         return verify_token_auth0(access_token)
     elif AUTH_PROVIDER == auth_demo:
         return verify_token_debug(access_token)
+    elif AUTH_PROVIDER == auth_firebase:
+        return verify_token_firebase(access_token)
+
+
+def verify_token_debug(access_token):
+    if access_token in ['DEVTOKEN1', 'DEVTOKEN2']:
+        return True
+    return False
+
+
+# verify token and return boolean success
+def verify_token_firebase(access_token):
+    #TODO: Patrick fill in here
+    return False
 
 
 # verify token and return boolean success
@@ -93,7 +109,7 @@ def get_user_from_token_auth0(access_token):
     response = urllib2.urlopen(userinfo)
     data = response.read()
     #return get_user_from_email(data.email)
-    print("get_user_from_token(): Failed to find user");
+    print("get_user_from_token(): Failed to find user")
     return None
 
 
@@ -104,7 +120,6 @@ def get_user_from_token_debug(access_token):
         return Users.dummy_user(2)
 
 
-def verify_token_debug(access_token):
-    if access_token in ['DEVTOKEN1', 'DEVTOKEN2']:
-        return True
-    return False
+def get_user_from_token_firebase(access_token):
+    #TODO: Patrick fill in here
+    return None

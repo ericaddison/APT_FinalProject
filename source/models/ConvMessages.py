@@ -5,7 +5,7 @@ class ConvMessages(ndb.Model):
     user = ndb.KeyProperty(indexed=True, kind='Users')
     alias = ndb.StringProperty(indexed=True)
     conv = ndb.KeyProperty(indexed=True, kind='Conversations')
-    postDate = ndb.DateTimeProperty(indexed=True)
+    postDate = ndb.DateTimeProperty(indexed=True, auto_now_add=True)
     text = ndb.StringProperty()
     mediaURL = ndb.StringProperty()
 
@@ -15,7 +15,7 @@ class ConvMessages(ndb.Model):
     def get_basic_data(self):
         return {'id': self.get_id(),
                 'userAlias': self.alias,
-                'postDate': self.postDate}
+                'postDate': str(self.postDate)}
 
     def get_full_data(self):
         """Get full data for this message ... everything except userid"""
