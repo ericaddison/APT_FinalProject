@@ -3,44 +3,33 @@ from source.models.Conversations import Conversations
 from source.models.ConvMessages import ConvMessages
 import source.framework.constants as c
 from source.framework.communicate import broadcast_message
+from source.api.api_helpers import process_apicall_checkconv_checkuser, process_apicall_checkconv
 
 # [BEGIN API python methods]
 
 def get_messages(user, conv_id):
     """Get conversation messages by conversation ID"""
-    response = {'status': 200}
-    conv = Conversations.get_conversation_by_id(conv_id)
-    if conv:
-        if conv.has_active_user(user):
-            response['messages'] = conv.get_messages_full_data()
-        else:
-            return NOT_AUTH_RESPONSE
-    else:
-        return NOT_FOUND_RESPONSE
-    return response
+
+    def get_messages(user, conv, response):
+        response['messages'] = conv.get_messages_full_data()
+        return response
+
+    return process_apicall_checkconv_checkuser(user, conv_id, get_messages)
 
 
 def create_message(user, conv_id, text, media_url):
     """Create a new message"""
-    # check user authorization
-    # check_user_auth()...
-    response = {'status': 200}
-    conv = Conversations.get_conversation_by_id(conv_id)
-    if conv:
-        if conv.has_active_user(user):
-            user_alias = conv.get_alias_for_user(user)
-            msg = ConvMessages.create(user, user_alias, conv, text, media_url)
-            conv.put_message(msg)
 
-            # send new msg to all users in this conv
-            broadcast_message(msg)
+    def create_message(user, conv, response):
+        user_alias = conv.get_alias_for_user(user)
+        msg = ConvMessages.create(user, user_alias, conv, text, media_url)
+        conv.put_message(msg)
+        # send new msg to all users in this conv
+        broadcast_message(msg)
+        response['messages'] = msg.get_full_data()
+        return response
 
-            response['messages'] = msg.get_full_data()
-        else:
-            return NOT_AUTH_RESPONSE
-    else:
-        return NOT_FOUND_RESPONSE
-    return response
+    return process_apicall_checkconv_checkuser(user, conv_id, create_message)
 
 
 def update_message(user, conv_id, message_id):

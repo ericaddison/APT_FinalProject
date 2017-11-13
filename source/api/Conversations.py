@@ -4,24 +4,28 @@ import source.framework.constants as c
 from source.models.Conversations import Conversations, id_policies
 from datetime import datetime
 import time
-
+from source.api.api_helpers import process_apicall_checkconv_checkuser
 
 # [BEGIN API python methods]
 
 def get_conversations(user, conv_id):
     """Get conversations by name, or get all conversations if no names provided"""
-    response = {'status': 200}
+
+    # method to call if user is part of the conversation
+    def full_data(user, conv, response):
+        response['conversations'] = conv.get_full_data()
+        return response
+
+    def basic_data(user, conv, response):
+        response['conversations'] = conv.get_basic_data()
+        return response
+
     if conv_id == "":
+        response = {'status': 200}
         response['conversations'] = Conversations.get_all_active_conversations_basic_data()
     else:
-        conv = Conversations.get_conversation_by_id(conv_id)
-        if conv:
-            if conv.has_active_user(user):
-                response['conversations'] = conv.get_full_data()
-            else:
-                response['conversations'] = conv.get_basic_data()
-        else:
-            return NOT_FOUND_RESPONSE
+        response = process_apicall_checkconv_checkuser(user, conv_id, full_data, basic_data)
+
     return response
 
 

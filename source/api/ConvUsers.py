@@ -1,5 +1,5 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE
-from source.api.api_helpers import process_request_checkconv_checkuser, process_request_checkconv
+from source.api.api_helpers import process_apicall_checkconv_checkuser, process_apicall_checkconv
 
 
 # [BEGIN API python methods]
@@ -10,8 +10,9 @@ def get_convusers(user, conv_id):
     # method to call if user is part of the conversation
     def get_aliases(user, conv, response):
         response['aliases'] = conv.get_active_aliases()
+        return response
 
-    return process_request_checkconv_checkuser(user, conv_id, get_aliases)
+    return process_apicall_checkconv_checkuser(user, conv_id, get_aliases)
 
 
 def create_convuser(user, conv_id):
@@ -22,8 +23,9 @@ def create_convuser(user, conv_id):
         cuser = conv.add_user(user)
         response['alias'] = cuser
         response['conversation'] = conv.get_full_data()
+        return response
 
-    return process_request_checkconv(user, conv_id, join_conv)
+    return process_apicall_checkconv(user, conv_id, join_conv)
 
 
 def delete_convuser(user, conv_id):
@@ -37,8 +39,9 @@ def delete_convuser(user, conv_id):
         else:
             return NOT_FOUND_RESPONSE
         response['conversation'] = conv.get_basic_data()
+        return response
 
-    return process_request_checkconv_checkuser(user, conv_id, remove_user)
+    return process_apicall_checkconv_checkuser(user, conv_id, remove_user)
 
 
 # [END API python methods]
