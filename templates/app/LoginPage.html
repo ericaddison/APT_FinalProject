@@ -1,14 +1,16 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
     {% include "standard_head.html" %}
 
 <script type="text/javascript">
       // FirebaseUI config.
+
+      var redirectUrl = "/manage";
       var uiConfig = {
-        signInSuccessUrl: '/manage',
+        signInSuccessUrl: redirectUrl,
         signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        <!--  firebase.auth.GoogleAuthProvider.PROVIDER_ID, -->
           firebase.auth.EmailAuthProvider.PROVIDER_ID
         ]
       };

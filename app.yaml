@@ -37,4 +37,8 @@ libraries:
   version: latest
 - name: pycrypto
   version: latest
+- name: flask
+  version: latest
+- name: ssl
+  version: latest
 # [END libraries]

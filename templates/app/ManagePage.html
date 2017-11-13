@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "standard_head.html" %}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+
+
+    function fetchUserData() {
+        $.ajax('/services/getuserinfo', {
+            headers: {'Authorization': 'Bearer ' + userIdToken}
+        }).then(function(data){
+                document.getElementById('textDisplay').textContent = data;
+                });
+    }flask
+
+</script>
+    <title>Manage</title>
+</head>
+<body>
+
+<button type="button" id ="soClickable" onclick="fetchUserData()">So Clickable!</button>
+<br>
+<div id = 'textDisplay'></div>
+
+</body>
+</html>

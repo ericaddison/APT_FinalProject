@@ -1,6 +1,6 @@
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
-<script>
+<script type="text/javascript">
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyAq2ZvX1YatNlTsE6p5sDqZaNCVsEbcGxw",
@@ -23,6 +23,7 @@
 <!-- Track user status -->
 <script type="text/javascript">
     var currUser;
+    var userIdToken;
       initApp = function() {
         firebase.auth().onAuthStateChanged(function(user) {
             currUser = user;
@@ -34,7 +35,9 @@
             var photoURL = user.photoURL;
             var uid = user.uid;
             var providerData = user.providerData;
+
             user.getIdToken().then(function(accessToken) {
+                userIdToken = accessToken;
               document.getElementById('sign-in-status').textContent = 'Signed in as ' + displayName + " <" + email + ">";
               document.getElementById('sign-in').textContent = 'Sign out';
               document.getElementById('account-details').textContent = JSON.stringify({
@@ -45,6 +48,7 @@
                 uid: uid,
                 accessToken: accessToken,
                 providerData: providerData
+
               }, null, '  ');
             });
           } else {
