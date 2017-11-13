@@ -1,58 +1,45 @@
-from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE, NOT_AUTH_RESPONSE
-from source.models.Conversations import Conversations
-from source.models.ConvUsers import ConvUsers
+from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE
+from source.api.api_helpers import process_request_checkconv_checkuser, process_request_checkconv
 
 
 # [BEGIN API python methods]
 
 def get_convusers(user, conv_id):
     """Get conversation users by conversation ID"""
-    response = {'status': 200}
-    conv = Conversations.get_conversation_by_id(conv_id)
-    if conv:
-        if conv.has_active_user(user):
-            response['aliases'] = conv.get_active_aliases()
-        else:
-            return NOT_AUTH_RESPONSE
-    else:
-        return NOT_FOUND_RESPONSE
-    return response
+
+    # method to call if user is part of the conversation
+    def get_aliases(user, conv, response):
+        response['aliases'] = conv.get_active_aliases()
+
+    return process_request_checkconv_checkuser(user, conv_id, get_aliases)
 
 
 def create_convuser(user, conv_id):
     """Create a new convuser (user join conversation)"""
-    # check user authorization
-    # check_user_auth()...
-    response = {'status': 200}
-    conv = Conversations.get_conversation_by_id(conv_id)
-    if conv:
+
+    # method to call if valid conversation
+    def join_conv(user, conv, response):
         cuser = conv.add_user(user)
         response['alias'] = cuser
         response['conversation'] = conv.get_full_data()
-    else:
-        return NOT_FOUND_RESPONSE
-    return response
+
+    return process_request_checkconv(user, conv_id, join_conv)
 
 
 def delete_convuser(user, conv_id):
     """Delete a convuser (user leave a conversation)"""
-    # check user authorization
-    # check_user_auth()...
-    response = {'status': 200}
-    conv = Conversations.get_conversation_by_id(conv_id)
-    if conv:
-        if conv.has_active_user(user):
-            cuser = conv.remove_user(user)
-            if cuser:
-                response['alias'] = cuser
-            else:
-                return NOT_FOUND_RESPONSE
-            response['conversation'] = conv.get_basic_data()
+
+    # method to call if valid conversation
+    def remove_user(user, conv, response):
+        cuser = conv.remove_user(user)
+        if cuser:
+            response['alias'] = cuser
         else:
-            return NOT_AUTH_RESPONSE
-    else:
-        return NOT_FOUND_RESPONSE
-    return response
+            return NOT_FOUND_RESPONSE
+        response['conversation'] = conv.get_basic_data()
+
+    return process_request_checkconv_checkuser(user, conv_id, remove_user)
+
 
 # [END API python methods]
 
