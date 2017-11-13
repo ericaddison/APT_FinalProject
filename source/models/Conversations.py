@@ -12,7 +12,6 @@ class Conversations(ndb.Model):
     password = ndb.StringProperty() #bcrypt hash value
     createDate = ndb.DateTimeProperty(auto_now_add=True)
     destroyDate = ndb.DateTimeProperty(indexed=True)
-    users = ndb.KeyProperty(repeated=True, kind='Users')
     aliases = ndb.KeyProperty(kind='ConvUsers', repeated=True)
     idPolicy = ndb.StringProperty() #???
     viewAfterExpire = ndb.BooleanProperty()
@@ -22,6 +21,18 @@ class Conversations(ndb.Model):
     def get_aliases(self):
         aliases = ndb.get_multi(self.aliases)
         return [alias.displayName for alias in aliases]
+
+    def get_active_aliases(self):
+        aliases = ndb.get_multi(self.aliases)
+        return [alias.displayName for alias in aliases if alias.active]
+
+    def get_active_users(self):
+        aliases = ndb.get_multi(self.aliases)
+        return [alias.user for alias in aliases if alias.active]
+
+    def get_all_users(self):
+        aliases = ndb.get_multi(self.aliases)
+        return [alias.user for alias in aliases]
 
     def check_conversation_password(self, convID, passwordHash):
         #use bcrypt to check pw hash param against stored
@@ -46,8 +57,9 @@ class Conversations(ndb.Model):
                 'revealOwner': self.revealOwner,
                 'restrictComms': self.restrictComms}
 
-    def has_user(self, user):
-        return user.key in self.users or user.key == self.owner
+    def has_active_user(self, user):
+        users = self.get_active_users()
+        return user.key in users or user.key == self.owner
 
     def get_messages_basic_data(self):
         msgs = ndb.get_multi(self.messages)
@@ -62,10 +74,46 @@ class Conversations(ndb.Model):
         self.put()
 
     def get_alias_for_user(self, user):
-        cuser = ConvUsers.query()
-        cuser = cuser.filter(ConvUsers.convID == self.key)
-        cuser = cuser.filter(ConvUsers.userID == user.key)
-        return cuser.get()
+        cuser = ConvUsers.get_by_user_and_conv(user, self)
+        if not cuser:
+            return None
+        return cuser.displayName
+
+    def add_user(self, user):
+        """Add a user to the conversation. Return displayName (alias)"""
+        # check if user already in conversation
+        users = self.get_active_users()
+        if user.key in users:
+            return self.get_alias_for_user(user)
+
+        # check if ConvUser already exists for this conv/user
+        # e.g, if was part of the conversation but previously left
+        cuser = ConvUsers.get_by_user_and_conv(user, self)
+
+        # if ConvUser does not exist, create
+        if not cuser:
+            cuser = ConvUsers.create(user, self, self.idPolicy)
+            self.aliases.append(cuser.key)
+        else:
+            cuser.set_active(True)
+        self.put()
+        return cuser.displayName
+
+    def remove_user(self, user):
+        """Remove a user from the conversation. Return displayName (alias)"""
+        # check if user already in conversation
+        users = self.get_active_users()
+
+        print(users)
+        print(user)
+
+        if user.key not in users:
+            return None
+
+        # retrieve ConvUser for this user/conversation
+        cuser = ConvUsers.get_by_user_and_conv(user, self)
+        cuser.set_active(False)
+        return cuser.displayName
 
     @classmethod
     def get_all_conversations(cls):
@@ -115,9 +163,7 @@ class Conversations(ndb.Model):
 
         # set owner alias
         conv.put()
-        cuser = ConvUsers.create(owner, conv, colors_policy)
-        conv.aliases.append(cuser.key)
-        conv.put()
+        conv.add_user(owner)
         return True, conv
 
     @classmethod

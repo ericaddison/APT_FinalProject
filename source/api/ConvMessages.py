@@ -1,7 +1,8 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE, NOT_AUTH_RESPONSE
 from source.models.Conversations import Conversations
 from source.models.ConvMessages import ConvMessages
-
+import source.framework.constants as c
+from source.framework.communicate import broadcast_message
 
 # [BEGIN API python methods]
 
@@ -10,7 +11,7 @@ def get_messages(user, conv_id):
     response = {'status': 200}
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
-        if conv.has_user(user):
+        if conv.has_active_user(user):
             response['messages'] = conv.get_messages_full_data()
         else:
             return NOT_AUTH_RESPONSE
@@ -26,10 +27,14 @@ def create_message(user, conv_id, text, media_url):
     response = {'status': 200}
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
-        if conv.has_user(user):
-            user_alias = conv.get_alias_for_user(user).displayName
+        if conv.has_active_user(user):
+            user_alias = conv.get_alias_for_user(user)
             msg = ConvMessages.create(user, user_alias, conv, text, media_url)
             conv.put_message(msg)
+
+            # send new msg to all users in this conv
+            broadcast_message(msg)
+
             response['messages'] = msg.get_full_data()
         else:
             return NOT_AUTH_RESPONSE
@@ -67,7 +72,9 @@ class ConvMessagesApi(ApiServiceHandler):
         """Create message API"""
         if args[1]:
             return NOT_FOUND_RESPONSE
-        return create_message(user, args[0], "hello", "")
+        text = self.get_request_param(c.text_param)
+        media_url = self.get_request_param(c.media_url_param)
+        return create_message(user, args[0], text, media_url)
 
     def put_hook(self, user, *args):
         """Update message API"""

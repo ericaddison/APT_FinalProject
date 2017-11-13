@@ -16,7 +16,7 @@ def get_conversations(user, conv_id):
     else:
         conv = Conversations.get_conversation_by_id(conv_id)
         if conv:
-            if conv.has_user(user):
+            if conv.has_active_user(user):
                 response['conversations'] = conv.get_full_data()
             else:
                 response['conversations'] = conv.get_basic_data()
