@@ -80,10 +80,11 @@ class Conversations(ndb.Model):
         return cuser.displayName
 
     def add_user(self, user):
+        """Add a user to the conversation. Return displayName (alias)"""
         # check if user already in conversation
         users = self.get_active_users()
         if user.key in users:
-            return None
+            return self.get_alias_for_user(user)
 
         # check if ConvUser already exists for this conv/user
         # e.g, if was part of the conversation but previously left
@@ -96,9 +97,10 @@ class Conversations(ndb.Model):
         else:
             cuser.set_active(True)
         self.put()
-        return cuser
+        return cuser.displayName
 
     def remove_user(self, user):
+        """Remove a user from the conversation. Return displayName (alias)"""
         # check if user already in conversation
         users = self.get_active_users()
 
@@ -111,7 +113,7 @@ class Conversations(ndb.Model):
         # retrieve ConvUser for this user/conversation
         cuser = ConvUsers.get_by_user_and_conv(user, self)
         cuser.set_active(False)
-        return cuser
+        return cuser.displayName
 
     @classmethod
     def get_all_conversations(cls):

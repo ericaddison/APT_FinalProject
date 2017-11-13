@@ -27,7 +27,7 @@ def create_convuser(user, conv_id):
     conv = Conversations.get_conversation_by_id(conv_id)
     if conv:
         cuser = conv.add_user(user)
-        response['alias'] = cuser.displayName
+        response['alias'] = cuser
         response['conversation'] = conv.get_full_data()
     else:
         return NOT_FOUND_RESPONSE
@@ -44,7 +44,7 @@ def delete_convuser(user, conv_id):
         if conv.has_active_user(user):
             cuser = conv.remove_user(user)
             if cuser:
-                response['alias'] = cuser.displayName
+                response['alias'] = cuser
             else:
                 return NOT_FOUND_RESPONSE
             response['conversation'] = conv.get_basic_data()

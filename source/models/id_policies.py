@@ -15,7 +15,7 @@ def get_name(conv, policy):
     nameind = 1
     name = names[ind]
     while name in aliases:
-        name = names[ind%len(names)]
+        name = names[ind % len(names)]
         if ind > len(names):
             name += nameind
             nameind += 1
