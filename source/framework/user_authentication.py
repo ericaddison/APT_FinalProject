@@ -69,7 +69,6 @@ def verify_token_firebase(access_token):
     claims = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     if not claims:
         return False
-    print "***Firebase Auth Reply: ", claims
     return True
 
 
@@ -136,10 +135,15 @@ def get_user_from_token_debug(access_token):
 def get_user_from_token_firebase(access_token):
     userDict = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     emailAddy = userDict.get('email')
-    userAcct =  Users.get_a_user(emailAddy)
+    print "***emailAddy: ", emailAddy
+    userAcct = Users.get_a_user(emailAddy)
     print "***userAcct: ", userAcct
     if userAcct:
         return userAcct
     else:
-        return None
-
+        names = userDict.get('name').split()
+        if len(names) > 1:
+            Users.create(emailAddy, names[0], names[1], None)
+        else:
+            Users.create(emailAddy, names[0], None, None)
+        return Users.get_a_user(emailAddy)
