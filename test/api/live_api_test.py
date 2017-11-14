@@ -25,7 +25,6 @@ def test_setup(test):
     test.alias1 = test.conv_data['aliases'][0]
 
 
-
 class TestLiveApi_Conversation(unittest.TestCase):
 
     def setUp(self):

@@ -33,11 +33,22 @@ def create_message(user, conv_id, text, media_url):
     return process_apicall_checkconv_checkuser(user, conv_id, create_message)
 
 
-def update_message(user, conv_id, message_id):
+def update_message(user, conv_id, message_id, text, media_url):
     """Update (edit) a message"""
-    response = {}
-    response['messages'] = "Updated message"
-    return response
+
+    # method to call if user is part of the conversation
+    def update_msg(user, conv, response):
+        user_alias = conv.get_alias_for_user(user)
+        msg = ConvMessages.get_by_id(message_id)
+        if msg.conv != conv:
+            return NOT_FOUND_RESPONSE
+        msg.update(text, media_url)
+        # send new msg to all users in this conv
+        broadcast_message(msg)
+        response['messages'] = msg.get_full_data()
+        return response
+
+    return process_apicall_checkconv_checkuser(user, conv_id, update_msg)
 
 
 def delete_message(user, conv_id, message_id):
@@ -79,6 +90,10 @@ class ConvMessagesApi(ApiServiceHandler):
 
     def put_hook(self, user, *args):
         """Update message API"""
+        if not args[1]:
+            return NOT_FOUND_RESPONSE
+        text = self.get_request_param(c.text_param)
+        media_url = self.get_request_param(c.media_url_param)
         return update_message(user, args[0], args[1])
 
     def delete_hook(self, user, *args):

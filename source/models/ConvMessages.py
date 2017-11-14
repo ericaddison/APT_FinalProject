@@ -1,11 +1,14 @@
 from google.appengine.ext import ndb
-
+from datetime import datetime
 
 class ConvMessages(ndb.Model):
     user = ndb.KeyProperty(indexed=True, kind='Users')
     alias = ndb.StringProperty(indexed=True)
     conv = ndb.KeyProperty(indexed=True, kind='Conversations')
     postDate = ndb.DateTimeProperty(indexed=True, auto_now_add=True)
+    textEdits = ndb.StringProperty(repeated=True)
+    mediaEdits = ndb.StringProperty(repeated=True)
+    editDates = ndb.DateTimeProperty(repeated=True)
     text = ndb.StringProperty()
     mediaURL = ndb.StringProperty()
     deleted = ndb.BooleanProperty()
@@ -37,15 +40,23 @@ class ConvMessages(ndb.Model):
         self.put()
         return self
 
+    def update(self, text=None, media_url=None):
+        if text:
+            self.text = text
+        if media_url:
+            self.mediaURL = media_url
+        self.textEdits.append(text)
+        self.mediaEdits.append(media_url)
+        self.editDates.append(datetime.now())
+        self.put()
+
     @classmethod
     def create(cls, user, user_alias, conv, text, media_url):
         msg = ConvMessages(user=user.key,
                            alias=user_alias,
                            conv=conv.key,
-                           text=text,
-                           mediaURL=media_url,
                            deleted=False)
-        msg.put()
+        msg.update(text, media_url)
         return msg
 
     @classmethod
