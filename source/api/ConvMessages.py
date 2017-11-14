@@ -46,6 +46,8 @@ def delete_message(user, conv_id, message_id):
     # method to call if user is part of the conversation
     def del_msg(user, conv, response):
         msg = ConvMessages.get_by_id(message_id)
+        if not msg:
+            return NOT_FOUND_RESPONSE
         if not msg.is_owner(user):
             return NOT_AUTH_RESPONSE
         msg.delete()
