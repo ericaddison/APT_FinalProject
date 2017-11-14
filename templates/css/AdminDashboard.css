@@ -5,23 +5,23 @@ html, body {
 
 /* Add a black background color to the top navigation */
 .sidenav {
-    background-color: #333;
+    background-color: #444444;
     overflow: hidden;
     width: 200px; /* Set a width if you like */
     float: left;
     height: 100%;
-    border-right: 2px solid #1e7e34;
+    border-right: 5px solid #424242;
 }
 
 .nav-title {
-    color: white;
+    color: #d5d9c3;
     text-align: center;
 }
 
 /* Style the links inside the navigation bar */
 .sidenav a {
-    background-color: #eee; /* Grey background color */
-    color: black; /* Black text color */
+    background-color: #4d4d4d; /* Grey background color */
+    color: #faffe5; /* Black text color */
     display: block; /* Make the links appear below each other */
     padding: 12px; /* Add some padding */
     text-decoration: none; /* Remove underline from links */
@@ -30,7 +30,7 @@ html, body {
 
 /* Add a color to the active/current link */
 .sidenav a.active {
-    background-color: #4CAF50;
+    background-color: #4b3534;
     color: white;
 }
 
@@ -45,6 +45,7 @@ html, body {
     height: 100%;
 }
 
+/* Different individual admin page content */
 .content {
     background-color: #ffffff;
     height: 100%;
