@@ -2,5 +2,5 @@
 
 def broadcast_message(convmsg):
     """Send new message to all users of a conversation"""
-    print("Sending message \"{}\" from {} to all".format(convmsg.text, convmsg.alias))
+    print("Sending message \"{}\" from {} to all".format(convmsg.get_text(), convmsg.alias))
 

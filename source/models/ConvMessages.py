@@ -7,28 +7,37 @@ class ConvMessages(ndb.Model):
     conv = ndb.KeyProperty(indexed=True, kind='Conversations')
     postDate = ndb.DateTimeProperty(indexed=True, auto_now_add=True)
     edits = ndb.JsonProperty(repeated=True)
-    text = ndb.StringProperty()
-    mediaURL = ndb.StringProperty()
     deleted = ndb.BooleanProperty()
 
     def get_id(self):
         return long(self.key.id())
+
+    def get_text(self):
+        return self.edits[-1]['text']
+
+    def get_media_url(self):
+        return self.edits[-1]['mediaURL']
 
     def get_basic_data(self):
         return {'id': self.get_id(),
                 'userAlias': self.alias,
                 'postDate': str(self.postDate)}
 
-    def is_owner(self, user):
+    def check_owner(self, user):
         """Check if the given user is the owner"""
         return user.key == self.user
+
+    def check_conv(self, conv):
+        """Check if the given conv matches"""
+        return conv.key == self.conv
 
     def get_full_data(self):
         """Get full data for this message ... everything except userid"""
         data = self.get_basic_data()
         data['convID'] = self.conv.id()
-        data['text'] = self.text
-        data['mediaURL'] = self.mediaURL
+        data['text'] = self.edits[-1]['text']
+        data['mediaURL'] = self.edits[-1]['media_url']
+        data['editedDate'] = self.edits[-1]['date']
         data['deleted'] = self.deleted
         data['convName'] = self.conv.get().name
         data['edits'] = self.edits
@@ -40,11 +49,10 @@ class ConvMessages(ndb.Model):
         return self
 
     def update(self, text=None, media_url=None):
-        if text:
-            self.text = text
-        if media_url:
-            self.mediaURL = media_url
-        self.edits.append({'text': self.text, 'media_url': self.mediaURL, 'date': str(datetime.now())})
+        # update this to work with text and media url in edits instead of raw fields
+        new_text = text if text else self.edits[-1]['text']
+        new_media = media_url if media_url else self.edits[-1]['mediaURL']
+        self.edits.append({'text': new_text, 'media_url': new_media, 'date': str(datetime.now())})
         self.put()
 
     @classmethod
@@ -53,7 +61,8 @@ class ConvMessages(ndb.Model):
                            alias=user_alias,
                            conv=conv.key,
                            deleted=False)
-        msg.update(text, media_url)
+        msg.edits.append({'text': text, 'media_url': media_url, 'date': str(datetime.now())})
+        msg.put()
         return msg
 
     @classmethod

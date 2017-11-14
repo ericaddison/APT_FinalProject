@@ -41,9 +41,9 @@ def update_message(user, conv_id, message_id, text, media_url):
         msg = ConvMessages.get_by_id(message_id)
         if not msg:
             return NOT_FOUND_RESPONSE
-        if msg.conv != conv:
+        if not msg.check_conv(conv):
             return NOT_FOUND_RESPONSE
-        if not msg.is_owner(user):
+        if not msg.check_owner(user):
             return NOT_AUTH_RESPONSE
         msg.update(text, media_url)
         # send new msg to all users in this conv
@@ -62,9 +62,9 @@ def delete_message(user, conv_id, message_id):
         msg = ConvMessages.get_by_id(message_id)
         if not msg:
             return NOT_FOUND_RESPONSE
-        if msg.conv != conv:
+        if not msg.check_conv(conv):
             return NOT_FOUND_RESPONSE
-        if not msg.is_owner(user):
+        if not msg.check_owner(user):
             return NOT_AUTH_RESPONSE
         msg.delete()
         # TODO: broadcast deleted msg?
