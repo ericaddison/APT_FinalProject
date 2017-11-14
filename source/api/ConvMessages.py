@@ -6,13 +6,23 @@ from source.api.api_helpers import process_apicall_checkconv_checkuser, process_
 
 # [BEGIN API python methods]
 
-def get_messages(user, conv_id):
+def get_messages(user, conv_id, msg_id):
     """Get conversation messages by conversation ID"""
 
-    # method to call if user is part of the conversation
-    def get_messages(user, conv, response):
-        response['messages'] = conv.get_messages_full_data()
-        return response
+    if msg_id:
+        def get_messages(user, conv, response):
+            msg = ConvMessages.get_by_id(msg_id)
+            if msg:
+                response['message'] = msg.get_full_data()
+            else:
+                return NOT_FOUND_RESPONSE
+            return response
+
+    else:
+        # method to call if user is part of the conversation
+        def get_messages(user, conv, response):
+            response['messages'] = conv.get_messages_full_data()
+            return response
 
     return process_apicall_checkconv_checkuser(user, conv_id, get_messages)
 
@@ -83,7 +93,7 @@ class ConvMessagesApi(ApiServiceHandler):
 
     def get_hook(self, user, *args):
         """Get message API"""
-        return get_messages(user, args[0])
+        return get_messages(user, args[0], args[1])
 
     def post_hook(self, user, *args):
         """Create message API"""

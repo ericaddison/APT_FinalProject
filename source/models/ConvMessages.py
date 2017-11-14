@@ -51,7 +51,7 @@ class ConvMessages(ndb.Model):
     def update(self, text=None, media_url=None):
         # update this to work with text and media url in edits instead of raw fields
         new_text = text if text else self.edits[-1]['text']
-        new_media = media_url if media_url else self.edits[-1]['mediaURL']
+        new_media = media_url if media_url else self.edits[-1]['media_url']
         self.edits.append({'text': new_text, 'media_url': new_media, 'date': str(datetime.now())})
         self.put()
 

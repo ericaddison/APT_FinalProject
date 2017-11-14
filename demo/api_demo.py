@@ -100,27 +100,27 @@ conv_id = r0['conversations']['id']
 # process_response(url, r)
 #
 #
-# 10) Join an existing conversation
-print("Join Conversation")
-url = 'http://localhost:8080/api/conversations/{}/users/'.format(conv_id)
-r = req.post(url, headers=headers2)
-process_response(url, r)
-
-
-# 4) Post a message to a conversation -- now authorized
-print("Post Message -- authorized")
-url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
-r = req.post(url, data={"text": "Now I am authorized!", "media_url": "http://www.google.com"}, headers=headers2)
-process_response(url, r)
-r1 = process_response(url, r)
-msg_id = r1['messages']['id']
-
-
-# 5) Retrieve messages from a conversation -- now authorized
-print("Get Messages -- now authorized")
-url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
-r = req.get(url, headers=headers2)
-process_response(url, r)
+# # 10) Join an existing conversation
+# print("Join Conversation")
+# url = 'http://localhost:8080/api/conversations/{}/users/'.format(conv_id)
+# r = req.post(url, headers=headers2)
+# process_response(url, r)
+#
+#
+# # 4) Post a message to a conversation -- now authorized
+# print("Post Message -- authorized")
+# url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
+# r = req.post(url, data={"text": "Now I am authorized!", "media_url": "http://www.google.com"}, headers=headers2)
+# process_response(url, r)
+# r1 = process_response(url, r)
+# msg_id = r1['messages']['id']
+#
+#
+# # 5) Retrieve messages from a conversation -- now authorized
+# print("Get Messages -- now authorized")
+# url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
+# r = req.get(url, headers=headers2)
+# process_response(url, r)
 #
 #
 # # 7) Delete a message from a conversation -- not found
@@ -137,11 +137,11 @@ process_response(url, r)
 # process_response(url, r)
 #
 #
-# 7) Delete a message from a conversation -- authorized
-print("Delete Message -- authorized")
-url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
-r = req.delete(url, headers=headers2)
-process_response(url, r)
+# # 7) Delete a message from a conversation -- authorized
+# print("Delete Message -- authorized")
+# url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
+# r = req.delete(url, headers=headers2)
+# process_response(url, r)
 #
 #
 # # 5) Retrieve messages from a conversation -- now authorized
@@ -170,3 +170,19 @@ process_response(url, r)
 # url = 'http://localhost:8080/api/conversations/{}/users/'.format(conv_id)
 # r = req.get(url, headers=headers1)
 # process_response(url, r)
+
+
+# Post a message and edit it a few times
+
+print("Edit Message")
+url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
+r = req.post(url, data={"text": "Messagessdf1", "media_url": "http://www.goggles.com"}, headers=headers1)
+msg_id = json.loads(r.content)['messages']['id']
+
+url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
+req.put(url, data={"text": "Messagess1", "media_url": "http://www.goggle.com"}, headers=headers1)
+req.put(url, data={"text": "Message", "media_url": "http://www.google.com"}, headers=headers1)
+
+url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
+r = req.get(url, headers=headers1)
+process_response(url, r)

@@ -309,31 +309,47 @@ class TestLiveApi_ConvMessages(unittest.TestCase):
         text = "I am a message"
         media_url = "http://www.google.com"
         r = req.post(url, data={"text": text, "media_url": media_url}, headers=headers1)
+        data = json.loads(r.content)
         assert r.status_code == 200
+        msg_id = data['messages']['id']
 
         # attempt to edit not authorized
-        url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(self.conv_id, 1234)
+        url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(self.conv_id, msg_id)
         r = req.put(url, data={'text': 'update!'}, headers=headers2)
         data = json.loads(r.content)
         assert r.status_code == 401
         assert data['status'] == 401
 
     def test_edit_message_authorized(self):
-        def test_edit_message_notauthorized(self):
-            # post a message
-            url = 'http://localhost:8080/api/conversations/{}/messages/'.format(self.conv_id)
-            text = "I am a message"
-            media_url = "http://www.google.com"
-            r = req.post(url, data={"text": text, "media_url": media_url}, headers=headers1)
-            assert r.status_code == 200
+        # post a message
+        url = 'http://localhost:8080/api/conversations/{}/messages/'.format(self.conv_id)
+        text = "I am a message"
+        media_url = "http://www.google.com"
+        r = req.post(url, data={"text": text, "media_url": media_url}, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        msg_id = data['messages']['id']
 
-            # attempt to edit not authorized
-            url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(self.conv_id, 1234)
-            r = req.put(url, data={'text': 'update!'}, headers=headers1)
-            data = json.loads(r.content)
-            assert r.status_code == 200
-            assert data['status'] == 200
+        # attempt to edit not authorized
+        url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(self.conv_id, msg_id)
+        newtext = 'update!'
+        newmedia = 'www.new.com'
+        r = req.put(url, data={'text': newtext, 'media_url': newmedia}, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        assert data['status'] == 200
 
+        # get the messages
+        url = 'http://localhost:8080/api/conversations/{}/messages/'.format(self.conv_id)
+        r = req.get(url, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        assert data['status'] == 200
+
+        msg = data['messages'][0]
+        assert msg['text'] == newtext
+        assert msg['mediaURL'] == newmedia
+        assert len(msg['edits']) == 2
 
     def test_post_message_authorized_msgcount_onemessage(self):
         # get messages and record message count
