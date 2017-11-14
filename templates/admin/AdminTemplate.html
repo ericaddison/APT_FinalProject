@@ -3,29 +3,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/AdminDashboard.css">
+    <script src="/js/jQuery/jquery-3.2.1.min.js"></script>
 
     <title>{% block title %}{% endblock %}</title>
 
     {% block extrahead %}{% endblock %}
 </head>
 <body>
-    <div class="container">
 
-    <!-- Navigation Links -->
-    <div class="nav-sidebar">
-        <h3 class="w3-bar-item">Menu</h3>
-        <a href="/admin/conversations/">Conversations</a>
-        <a href="/admin/messages/">Messages</a>
-        <a href="/admin/users/">Users</a>
-    </div>
+    <div class="main">
 
-        <div id="content">
+        <!-- Navigation Links -->
+        <div class="sidenav">
+            <h3 class="nav-title">Menu</h3>
+            <a href="/admin/conversations/">Conversations</a>
+            <a href="/admin/messages/">Messages</a>
+            <a href="/admin/users/">Users</a>
+        </div>
+
+        <div class="content">
             {% block content %}
             {% endblock %}
         </div>
 
     </div>
 
+<script src="/js/ActivePageColoring.js"></script>
 
 </body>
 </html>
