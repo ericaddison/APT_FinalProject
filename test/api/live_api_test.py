@@ -9,8 +9,6 @@ import time
 # Then, token 'DEVTOKEN1' will access dummy user 1
 # and token 'DEVTOKEN2' will access dummy user 2
 
-auth.AUTH_PROVIDER = auth.auth_demo
-
 # set up two authorization headers, one for each dummy user
 headers1 = {"Authorization": "Bearer DEVTOKEN1"}
 headers2 = {"Authorization": "Bearer DEVTOKEN2"}
@@ -20,13 +18,12 @@ headers2 = {"Authorization": "Bearer DEVTOKEN2"}
 def test_setup(test):
     # create a conversation
     url = 'http://localhost:8080/api/conversations/'
-    test.conv_name = "Demo Conversation {}".format(random.randint(0, 10000))
+    test.conv_name = "Demo Conversation {}".format(random.randint(0, 10000000))
     r = req.post(url, data={'conv_name': test.conv_name}, headers=headers1)
     test.conv_data = json.loads(r.content)['conversations']
     test.conv_id = test.conv_data['id']
-    if 'aliases' in test.conv_data.keys():
-        test.alias1 = test.conv_data['aliases'][0]
-    time.sleep(0.05)
+    test.alias1 = test.conv_data['aliases'][0]
+
 
 
 class TestLiveApi_Conversation(unittest.TestCase):
@@ -91,7 +88,6 @@ class TestLiveApi_Conversation(unittest.TestCase):
 class TestLiveApi_ConvUsers(unittest.TestCase):
 
     def setUp(self):
-
         test_setup(self)
 
     def tearDown(self):
