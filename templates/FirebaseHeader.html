@@ -1,5 +1,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <script type="text/javascript">
   // Initialize Firebase
   var config = {
@@ -22,13 +24,18 @@
 
 <!-- Track user status -->
 <script type="text/javascript">
-    var currUser;
+    var firebaseUser;
+    var localUser;
     var userIdToken;
-      initApp = function() {
+
+    //Add a callback to initApp so we will wait until the user value is returned.
+      function initApp () {
+        return new Promise(function(resolve, reject){
         firebase.auth().onAuthStateChanged(function(user) {
-            currUser = user;
+            console.log("Auth State Changed");
           if (user) {
             // User is signed in.
+              firebaseUser = user;
             var displayName = user.displayName;
             var email = user.email;
             var emailVerified = user.emailVerified;
@@ -51,18 +58,32 @@
 
               }, null, '  ');
             });
+            resolve();
           } else {
             // User is signed out.
             document.getElementById('sign-in-status').textContent = 'Not Signed In';
             document.getElementById('sign-in').textContent = 'Sign In';
             document.getElementById('account-details').textContent = 'null';
+            reject();
           }
-        }, function(error) {
-          console.log(error);
-        });
-      };
+        },
+            function(error) {
+          console.log(error);}
+
+        )}
+        )};
+
+
+
 
       window.addEventListener('load', function() {
-        initApp()
-      });
-    </script>
+        initApp().then(function (){
+            $.ajax('/api/users/', {
+                headers: {'Authorization': 'Bearer ' + userIdToken}
+            }).then(function (result) {
+                localUser = result;
+            })
+        });
+      })
+
+</script>
