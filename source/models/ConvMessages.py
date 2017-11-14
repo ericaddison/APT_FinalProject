@@ -6,9 +6,7 @@ class ConvMessages(ndb.Model):
     alias = ndb.StringProperty(indexed=True)
     conv = ndb.KeyProperty(indexed=True, kind='Conversations')
     postDate = ndb.DateTimeProperty(indexed=True, auto_now_add=True)
-    textEdits = ndb.StringProperty(repeated=True)
-    mediaEdits = ndb.StringProperty(repeated=True)
-    editDates = ndb.DateTimeProperty(repeated=True)
+    edits = ndb.JsonProperty(repeated=True)
     text = ndb.StringProperty()
     mediaURL = ndb.StringProperty()
     deleted = ndb.BooleanProperty()
@@ -33,6 +31,7 @@ class ConvMessages(ndb.Model):
         data['mediaURL'] = self.mediaURL
         data['deleted'] = self.deleted
         data['convName'] = self.conv.get().name
+        data['edits'] = self.edits
         return data
 
     def delete(self):
@@ -45,9 +44,7 @@ class ConvMessages(ndb.Model):
             self.text = text
         if media_url:
             self.mediaURL = media_url
-        self.textEdits.append(text)
-        self.mediaEdits.append(media_url)
-        self.editDates.append(datetime.now())
+        self.edits.append({'text': self.text, 'media_url': self.mediaURL, 'date': str(datetime.now())})
         self.put()
 
     @classmethod

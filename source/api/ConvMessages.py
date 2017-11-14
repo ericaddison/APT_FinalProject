@@ -38,10 +38,13 @@ def update_message(user, conv_id, message_id, text, media_url):
 
     # method to call if user is part of the conversation
     def update_msg(user, conv, response):
-        user_alias = conv.get_alias_for_user(user)
         msg = ConvMessages.get_by_id(message_id)
+        if not msg:
+            return NOT_FOUND_RESPONSE
         if msg.conv != conv:
             return NOT_FOUND_RESPONSE
+        if not msg.is_owner(user):
+            return NOT_AUTH_RESPONSE
         msg.update(text, media_url)
         # send new msg to all users in this conv
         broadcast_message(msg)
@@ -58,6 +61,8 @@ def delete_message(user, conv_id, message_id):
     def del_msg(user, conv, response):
         msg = ConvMessages.get_by_id(message_id)
         if not msg:
+            return NOT_FOUND_RESPONSE
+        if msg.conv != conv:
             return NOT_FOUND_RESPONSE
         if not msg.is_owner(user):
             return NOT_AUTH_RESPONSE
@@ -94,7 +99,7 @@ class ConvMessagesApi(ApiServiceHandler):
             return NOT_FOUND_RESPONSE
         text = self.get_request_param(c.text_param)
         media_url = self.get_request_param(c.media_url_param)
-        return update_message(user, args[0], args[1])
+        return update_message(user, args[0], args[1], text, media_url)
 
     def delete_hook(self, user, *args):
         """Delete message API"""
