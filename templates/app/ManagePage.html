@@ -33,18 +33,14 @@
     function loadAllConversations(userToken) {
         $.ajax('/api/conversations/', {
             headers: {'Authorization': 'Bearer ' + userIdToken}
-        //Store the results
-        }).then(function (result) {
-            return new Promise(function (resolve, reject) {
-                conversationArray = result['conversations'];
-                console.log("convos[0]: " + conversationArray[0]);
-                resolve();
-            })
-        //Populate the Conversation Table
-        }).then(function (result) {
-            var tab, tr, td, tn, row;
 
+        //Create and populate the Conversation Table
+        }).then(function (result) {
+            conversationArray = result['conversations'];
+
+            var tab, tr, td, tn, row;
             tableDiv = document.getElementById('conversationTable');
+
             tab = document.createElement('table');
             tr = document.createElement('tr');
             td = document.createElement('td');
