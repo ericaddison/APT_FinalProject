@@ -11,5 +11,5 @@ app = make_routes([
     ('/api/conversations/(\d*)/messages/(\d*)', ConvMessagesApi),
     ('/api/conversations/(\d*)/users/(\d*)', ConvUsersApi),
     ('/api/conversations/(\d*)', ConversationsApi),
-    ('/api/users/(\d+)', UsersApi)
+    ('/api/users/', UsersApi)
 ])

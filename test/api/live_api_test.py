@@ -30,43 +30,18 @@ class TestLiveApi_Users(unittest.TestCase):
     def setUp(self):
         test_setup(self)
 
-    def tearDown(self):
-        url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
-        req.delete(url, headers=headers1)
-
-    def test_get_user_notauthorized(self):
-        url = 'http://localhost:8080/api/users/123456789'
-        r = req.get(url, headers=headers2)
-        data = json.loads(r.content)
-        assert r.status_code == 401
-        assert data['status'] == 401
-
-    def test_get_user_authorized(self):
-        url = 'http://localhost:8080/api/users/123456789'
+    def test_get_user(self):
+        url = 'http://localhost:8080/api/users/'
         r = req.get(url, headers=headers1)
         data = json.loads(r.content)
         assert r.status_code == 200
         assert data['status'] == 200
-        assert 'user-settings' in data.keys()
-        assert data['user-settings']['email'] == "test@example.com"
-        assert data['user-settings']['id'] == 123456789
+        assert 'user' in data.keys()
+        assert data['user']['email'] == "test@example.com"
+        assert data['user']['id'] == 123456789
 
-    def test_update_user_notfound(self):
-        url = 'http://localhost:8080/api/users/1'
-        r = req.get(url, headers=headers1)
-        data = json.loads(r.content)
-        assert r.status_code == 401
-        assert data['status'] == 401
-
-    def test_update_user_notauthorized(self):
-        url = 'http://localhost:8080/api/users/123456789'
-        r = req.put(url, data={'fname': 'Bob', 'lname': 'Schubert', 'prefcomm': 'web'},headers=headers2)
-        data = json.loads(r.content)
-        assert r.status_code == 401
-        assert data['status'] == 401
-
-    def test_update_user_authorized(self):
-        url = 'http://localhost:8080/api/users/123456789'
+    def test_update_user(self):
+        url = 'http://localhost:8080/api/users/'
         newfname = 'Bob{}'.format(random.randint(0, 100))
         newlname = 'Schubert{}'.format(random.randint(0, 100))
         r = req.put(url, data={'fname': newfname, 'lname': newlname, 'prefcomm': 'web'}, headers=headers1)
@@ -77,25 +52,19 @@ class TestLiveApi_Users(unittest.TestCase):
         assert data['user']['lName'] == newlname
         assert data['user']['prefComm'] == 'web'
 
-    def test_delete_user_notfound(self):
-        assert False
-
-    def test_delete_user_notauthorized(self):
-        assert False
-
     def test_delete_user_authorized(self):
-        assert False
-
+        url = 'http://localhost:8080/api/users/'
+        r = req.delete(url, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        assert data['status'] == 200
+        print(data)
 
 
 class TestLiveApi_Conversation(unittest.TestCase):
 
     def setUp(self):
         test_setup(self)
-
-    def tearDown(self):
-        url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
-        req.delete(url, headers=headers1)
 
     def test_create_conversation(self):
         assert self.conv_data['name'] == self.conv_name
@@ -151,10 +120,6 @@ class TestLiveApi_ConvUsers(unittest.TestCase):
 
     def setUp(self):
         test_setup(self)
-
-    def tearDown(self):
-        url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
-        req.delete(url, headers=headers1)
 
     def test_get_aliases_notfound(self):
         url = 'http://localhost:8080/api/conversations/{}/users/'.format(1234)
@@ -263,10 +228,6 @@ class TestLiveApi_ConvMessages(unittest.TestCase):
 
     def setUp(self):
         test_setup(self)
-
-    def tearDown(self):
-        url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
-        req.delete(url, headers=headers1)
 
     def test_post_message_notfound(self):
         url = 'http://localhost:8080/api/conversations/{}/messages/'.format(1234)
