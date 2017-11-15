@@ -1,0 +1,52 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Add a black background color to the top navigation */
+.sidenav {
+    background-color: #444444;
+    overflow: hidden;
+    width: 200px; /* Set a width if you like */
+    float: left;
+    height: 100%;
+    border-right: 5px solid #424242;
+}
+
+.nav-title {
+    color: #d5d9c3;
+    text-align: center;
+}
+
+/* Style the links inside the navigation bar */
+.sidenav a {
+    background-color: #4d4d4d; /* Grey background color */
+    color: #faffe5; /* Black text color */
+    display: block; /* Make the links appear below each other */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove underline from links */
+.
+}
+
+/* Add a color to the active/current link */
+.sidenav a.active {
+    background-color: #4b3534;
+    color: white;
+}
+
+/* Change the color of links on hover */
+.sidenav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.main {
+    clear: both;
+    height: 100%;
+}
+
+/* Different individual admin page content */
+.content {
+    background-color: #ffffff;
+    height: 100%;
+}

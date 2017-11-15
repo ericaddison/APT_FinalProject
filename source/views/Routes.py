@@ -13,7 +13,7 @@ app = make_routes([
 
     # [START services]
 
-    ('/services/getuserinfo', ApiServiceHandler),
+    ('/services/user', ApiServiceHandler),
 
 
     # [END services]

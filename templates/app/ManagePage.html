@@ -10,7 +10,7 @@
 
 
     function fetchUserData() {
-        $.ajax('/services/getuserinfo', {
+        $.ajax('/services/user', {
             headers: {'Authorization': 'Bearer ' + userIdToken}
         }).then(function(data){
                 document.getElementById('textDisplay').textContent = data;
