@@ -28,11 +28,9 @@
     var localUser;
     var userIdToken;
 
-    //Add a callback to initApp so we will wait until the user value is returned.
       function initApp () {
         return new Promise(function(resolve, reject){
         firebase.auth().onAuthStateChanged(function(user) {
-            console.log("Auth State Changed");
           if (user) {
             // User is signed in.
               firebaseUser = user;
@@ -71,19 +69,32 @@
           console.log(error);}
 
         )}
-        )};
+        )}
+
+
+        function userDataLoaded(){
+          return new Promise(function(resolve, reject) {
+              console.log("***userDataLoaded()");
+              resolve();
+          })
+        }
+
 
 
 
 
       window.addEventListener('load', function() {
-        initApp().then(function (){
-            $.ajax('/api/users/', {
-                headers: {'Authorization': 'Bearer ' + userIdToken}
-            }).then(function (result) {
-                localUser = result;
-            })
-        });
-      })
+                initApp().then(function (){
+                    $.ajax('/api/users/', {headers: {'Authorization': 'Bearer ' + userIdToken}
+                    }).then(function (result) {
+                        if(result) {
+                            console.log(result['user-settings']);
+                            localUser = result['user-settings'];
+                            userDataLoaded().then(loadPageData());
+                        }
+                        })
+                    })
+                });
+
 
 </script>

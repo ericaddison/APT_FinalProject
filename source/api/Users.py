@@ -39,6 +39,7 @@ class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
 
     def get_hook(self, user, *args):
+        #user is a local user object
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
         return get_user(user)

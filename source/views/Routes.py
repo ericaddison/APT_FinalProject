@@ -3,7 +3,6 @@ from source.views.Main import LandingPage
 from auth0_demo import Auth0LoginCallback, Auth0MainPage
 from source.views.Login import LoginPage
 from source.views.Manage import ManagePage
-from source.framework.ApiServiceHandler import ApiServiceHandler
 
 app = make_routes([
     # [START auth0 demo]
@@ -12,8 +11,6 @@ app = make_routes([
     # [END auth0 demo]
 
     # [START services]
-
-    ('/services/user', ApiServiceHandler),
 
 
     # [END services]

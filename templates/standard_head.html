@@ -10,8 +10,9 @@
 <script type="text/javascript">
 
     function signToggle(){
-        if(currUser){
+        if(firebaseUser){
             firebase.auth().signOut();
+            window.location.replace("/");
         }
         else{
             window.location.replace("/login");

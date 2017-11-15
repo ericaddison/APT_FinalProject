@@ -32,6 +32,7 @@ class ApiServiceHandler(BaseHandler):
         if 'status' in response.keys():
             self.response.set_status(response['status'])
 
+        print "***process(): response: ", response
         self.write_dictionary_response(response)
 
     def get(self, *args):

@@ -6,25 +6,26 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
 
+    //This function will be different for each page, but will be called by the same call in FirebaseHeader
+    function loadPageData() {
+            document.getElementById('emailBox').value = localUser['email'];
+            document.getElementById('fnameBox').value = localUser['fName'];
+            document.getElementById('lnameBox').value = localUser['lName'];
+            document.getElementById('dateBox').value = localUser['joinDate'];
+            document.getElementById('commPrefBox').value = localUser['prefComm'];
+        }
 
-
-
-    function fetchUserData() {
-        $.ajax('/services/user', {
-            headers: {'Authorization': 'Bearer ' + userIdToken}
-        }).then(function(data){
-                document.getElementById('textDisplay').textContent = data;
-                });
-    }
 
 </script>
     <title>Manage</title>
 </head>
 <body>
 
-<button type="button" id ="soClickable" onclick="fetchUserData()">So Clickable!</button>
-<br>
-<div id = 'textDisplay'></div>
+Email: <input type="text" id="emailBox"><br>
+First Name: <input type="text" id="fnameBox"><br>
+Last Name: <input type="text" id="lnameBox"><br>
+Date Joined: <input type="text" id="dateBox"><br>
+Communication Preference: <input type="text" id="commPrefBox"><br>
 
 </body>
 </html>
