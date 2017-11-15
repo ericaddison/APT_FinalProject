@@ -29,14 +29,6 @@ def update_user(user, user_id, fname="", lname="", prefcomm=""):
     return {'user': user.get_full_data(), 'status': 200}
 
 
-def create_user(email, fname, lname, prefcomm):
-    """Create a user"""
-    user = Users.create(email, fname, lname, prefcomm)
-    if user:
-        return get_user(user)
-    return {'message': 'Email already in use', 'status': 403}
-
-
 def delete_user(user, user_id):
     """Delete a user"""
     if user.get_id() != long(user_id):
@@ -63,22 +55,6 @@ class UsersApi(ApiServiceHandler):
         lname = self.get_request_param(c.lname_parm)
         prefcomm = self.get_request_param(c.prefcomm_parm)
         return update_user(user, args[0], fname, lname, prefcomm)
-
-    def post_hook(self, user, *args):
-        """Create a new user"""
-        if args[0]:
-            return NOT_FOUND_RESPONSE
-
-        # dummy version, for now
-        fname = self.get_request_param(c.fname_parm)
-        lname = self.get_request_param(c.lname_parm)
-        email = self.get_request_param(c.email_parm)
-        prefcomm = self.get_request_param(c.prefcomm_parm)
-
-        # real version should ....
-        # retrieve user info from access token and store in database
-        # store as an unverified user until email verification
-        return create_user(email, fname, lname, prefcomm)
 
     def delete_hook(self, user, *args):
         """Delete a user"""

@@ -34,9 +34,6 @@ class TestLiveApi_Users(unittest.TestCase):
         url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
         req.delete(url, headers=headers1)
 
-    def test_create_user(self):
-        assert False
-
     def test_get_user_notauthorized(self):
         url = 'http://localhost:8080/api/users/123456789'
         r = req.get(url, headers=headers2)

@@ -2,8 +2,12 @@ auth_auth0 = "auth0"
 auth_firebase = "firebase"
 auth_demo = "demo"
 
-AUTH_PROVIDER = auth_demo
+AUTH_PROVIDER = auth_firebase
 
+# [BEGIN firebase account info]
+FIREBASE_AUD = 'hailing-frequencies-2017'
+FIREBASE_ISS = 'https://securetoken.google.com/hailing-frequencies-2017'
+# [END firebase account info]
 
 # [BEGIN auth0 account info]
 AUTH0_CLIENT_ID = "JhKTQ3FyHLTEY3PPsQ6MQ8OXsUXuNXEN"

@@ -8,6 +8,7 @@ class Users(ndb.Model):
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
     prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
     premium = ndb.BooleanProperty(indexed=True)
+    verified = ndb.BooleanProperty(indexed=True)
 
     def get_id(self):
         return long(self.key.id())
@@ -19,7 +20,8 @@ class Users(ndb.Model):
                 'lName': self.lName,
                 'joinDate': str(self.joinDate),
                 'prefComm': self.prefComm,
-                'premium': self.premium}
+                'premium': self.premium,
+                'verified': self.verified}
 
     def commit(self):
         self.put()
@@ -28,7 +30,7 @@ class Users(ndb.Model):
         self.key.delete()
 
     @classmethod
-    def create(cls, email, fname, lname, prefcomm=""):
+    def create(cls, email, fname, lname, prefcomm="", verified=False):
         if Users.get_a_user(email):
             return None
 
@@ -36,7 +38,8 @@ class Users(ndb.Model):
                      fName=fname,
                      lName=lname,
                      prefComm=prefcomm,
-                     premium=False
+                     premium=False,
+                     verified=verified
                      )
         user.put()
         return user
@@ -69,11 +72,12 @@ class Users(ndb.Model):
                              lName="Testerson",
                              id=123456789,
                              prefComm="email",
-                             premium=True
+                             premium=True,
+                             verified=True
                              )
                 user.put()
             return user
-        else:
+        elif dummyid == 2:
             user = Users.get_a_user(user_id=987654321)
             if not user:
                 user = Users(email="serious@example.com",
@@ -81,7 +85,20 @@ class Users(ndb.Model):
                              lName="Zest",
                              id=987654321,
                              prefComm="sms",
-                             premium=False)
+                             premium=False,
+                             verified=True)
+                user.put()
+            return user
+        else:
+            user = Users.get_a_user(user_id=111666)
+            if not user:
+                user = Users(email="unverified@dude.com",
+                             fName="No",
+                             lName="Way",
+                             id=111666,
+                             prefComm="sms",
+                             premium=False,
+                             verified=False)
                 user.put()
             return user
 

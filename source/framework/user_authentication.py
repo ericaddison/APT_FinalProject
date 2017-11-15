@@ -1,9 +1,10 @@
 import urllib2
 import json
+from pprint import pprint
 import lib.jwt as jwt
 from lib.jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
-from source.config.authentication import *
+import source.config.authentication as conf
 from source.models.Users import Users
 
 #appengine_config.py includes these from the lib directory
@@ -40,42 +41,42 @@ def user_authentication(auth_header):
 
 
 def get_user_from_token(access_token):
-    if AUTH_PROVIDER == auth_auth0:
+    if conf.AUTH_PROVIDER == conf.auth_auth0:
         return get_user_from_token_auth0(access_token)
-    elif AUTH_PROVIDER == auth_demo:
+    elif conf.AUTH_PROVIDER == conf.auth_demo:
         return get_user_from_token_debug(access_token)
-    elif AUTH_PROVIDER == auth_firebase:
+    elif conf.AUTH_PROVIDER == conf.auth_firebase:
         return get_user_from_token_firebase(access_token)
 
 
 def verify_token(access_token):
-    print("Attempting to verify {0} access_token {1}".format(AUTH_PROVIDER, access_token))
-    if AUTH_PROVIDER == auth_auth0:
+    print("Attempting to verify {0} access_token {1}".format(conf.AUTH_PROVIDER, access_token))
+    if conf.AUTH_PROVIDER == conf.auth_auth0:
         return verify_token_auth0(access_token)
-    elif AUTH_PROVIDER == auth_demo:
+    elif conf.AUTH_PROVIDER == conf.auth_demo:
         return verify_token_debug(access_token)
-    elif AUTH_PROVIDER == auth_firebase:
+    elif conf.AUTH_PROVIDER == conf.auth_firebase:
         return verify_token_firebase(access_token)
 
 
 def verify_token_debug(access_token):
-    if access_token in ['DEVTOKEN1', 'DEVTOKEN2']:
+    if access_token in ['DEVTOKEN1', 'DEVTOKEN2', 'DEVTOKEN3']:
         return True
     return False
 
 
 # verify token and return boolean success
 def verify_token_firebase(access_token):
-    claims = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
-    if not claims:
-        return False
-    return True
+    data = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
+    if data['aud'] == conf.FIREBASE_AUD and data['iss'] == conf.FIREBASE_ISS:
+        return True
+    return False
 
 
 # verify token and return boolean success
 def verify_token_auth0(access_token):
 
-    jsonurl = urllib2.urlopen("https://" + AUTH0_DOMAIN + "/.well-known/jwks.json")
+    jsonurl = urllib2.urlopen("https://" + conf.AUTH0_DOMAIN + "/.well-known/jwks.json")
     jwks = json.loads(jsonurl.read())
     try:
         unverified_header = jwt.get_unverified_header(access_token)
@@ -103,8 +104,8 @@ def verify_token_auth0(access_token):
                 access_token,
                 rsa_key,
                 algorithms=["RS256"],
-                audience=AUTH0_AUDIENCE,
-                issuer="https://" + AUTH0_DOMAIN + "/"
+                audience=conf.AUTH0_AUDIENCE,
+                issuer="https://" + conf.AUTH0_DOMAIN + "/"
             )
         except Exception, e:
             print(e.message)
@@ -116,7 +117,7 @@ def verify_token_auth0(access_token):
 
 # last step maybe? After verifying token?
 def get_user_from_token_auth0(access_token):
-    base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
+    base_url = "https://{domain}".format(domain=conf.AUTH0_DOMAIN)
     userinfo = base_url + "/userinfo?access_token=" + access_token
     response = urllib2.urlopen(userinfo)
     data = response.read()
@@ -130,20 +131,26 @@ def get_user_from_token_debug(access_token):
         return Users.dummy_user(1)
     elif access_token == 'DEVTOKEN2':
         return Users.dummy_user(2)
+    elif access_token == 'DEVTOKEN3':
+        return Users.dummy_user(3)
 
 
 def get_user_from_token_firebase(access_token):
     userDict = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     emailAddy = userDict.get('email')
+    pprint(userDict)
     print "***emailAddy: ", emailAddy
     userAcct = Users.get_a_user(emailAddy)
     print "***userAcct: ", userAcct
     if userAcct:
         return userAcct
+
+    # create new user account
     else:
         names = userDict.get('name').split()
+        verified = userDict.get('email_verified')
         if len(names) > 1:
-            Users.create(emailAddy, names[0], names[1], None)
+            user = Users.create(emailAddy, names[0], names[1], None, verified)
         else:
-            Users.create(emailAddy, names[0], None, None)
-        return Users.get_a_user(emailAddy)
+            user = Users.create(emailAddy, names[0], None, None, verified)
+        return user
