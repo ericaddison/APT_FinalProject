@@ -2,8 +2,6 @@ import urllib2
 import json
 from pprint import pprint
 import lib.jwt as jwt
-from lib.jwt.contrib.algorithms.pycrypto import RSAAlgorithm
-from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
 from source.models.Users import Users
 
 #appengine_config.py includes these from the lib directory
@@ -21,9 +19,6 @@ try:
 except ImportError:
     import source.config.authentication_dummy as conf
 
-
-#jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
-#jwt.register_algorithm('ES256', ECAlgorithm(ECAlgorithm.SHA256))
 
 def user_authentication(auth_header):
     user = None
@@ -153,7 +148,7 @@ def get_user_from_token_firebase(access_token):
     # create new user account
     else:
         names = userDict.get('name').split()
-        verified = userDict.get('email_verified')
+        verified = (userDict['firebase']['sign_in_provider'] != 'password')
         if len(names) > 1:
             user = Users.create(emailAddy, names[0], names[1], None, verified)
         else:
