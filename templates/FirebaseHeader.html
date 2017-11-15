@@ -88,8 +88,9 @@
                     $.ajax('/api/users/', {headers: {'Authorization': 'Bearer ' + userIdToken}
                     }).then(function (result) {
                         if(result) {
-                            console.log(result['user-settings']);
-                            localUser = result['user-settings'];
+                            console.log("***result: " + result['user']);
+                            console.log("***result['user']: " + result['user']);
+                            localUser = result['user'];
                             userDataLoaded().then(loadPageData());
                         }
                         })
