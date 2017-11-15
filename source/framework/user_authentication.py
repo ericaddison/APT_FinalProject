@@ -4,7 +4,6 @@ from pprint import pprint
 import lib.jwt as jwt
 from lib.jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from lib.jwt.contrib.algorithms.py_ecdsa import ECAlgorithm
-import source.config.authentication as conf
 from source.models.Users import Users
 
 #appengine_config.py includes these from the lib directory
@@ -15,6 +14,12 @@ import google.oauth2.id_token
 #authenticate the firebase tokens
 import requests_toolbelt.adapters.appengine
 requests_toolbelt.adapters.appengine.monkeypatch()
+
+# check if real authentication config file exists, otherwise use dummy
+try:
+    import source.config.authentication as conf
+except ImportError:
+    import source.config.authentication_dummy as conf
 
 
 #jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
