@@ -10,7 +10,7 @@ from source.api.api_helpers import process_apicall_checkconv_checkuser
 
 def get_conversations(user, conv_id):
     """Get conversations by name, or get all conversations if no names provided"""
-
+    print "***get_conversations"
     # method to call if user is part of the conversation
     def full_data(user, conv, response):
         response['conversations'] = conv.get_full_data()
@@ -89,6 +89,7 @@ class ConversationsApi(ApiServiceHandler):
 
     def post_hook(self, user, *args):
         """Create conversation data API"""
+        print "***post_hook user: ", user, " args: ", args
         if args[0]:
             return NOT_FOUND_RESPONSE
 

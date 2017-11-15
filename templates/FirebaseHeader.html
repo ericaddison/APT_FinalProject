@@ -26,6 +26,7 @@
 <script type="text/javascript">
     var firebaseUser;
     var localUser;
+    var localUserId;
     var userIdToken;
 
       function initApp () {
@@ -85,12 +86,11 @@
 
       window.addEventListener('load', function() {
                 initApp().then(function (){
-                    $.ajax('/api/users/', {headers: {'Authorization': 'Bearer ' + userIdToken}
+                    $.ajax({url:'/api/users/', type: "GET", headers: {'Authorization': 'Bearer ' + userIdToken}
                     }).then(function (result) {
                         if(result) {
-                            console.log("***result: " + result['user']);
-                            console.log("***result['user']: " + result['user']);
                             localUser = result['user'];
+                            localUserId = localUser['id'];
                             userDataLoaded().then(loadPageData());
                         }
                         })

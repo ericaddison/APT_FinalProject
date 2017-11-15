@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "standard_head.html" %}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    //This function will be different for each page, but will be called by the same call in FirebaseHeader
+
+    //def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
+
+    function loadPageData() {
+        document.getElementById('owner').value = localUser['id'];
+        document.getElementById('results').style.visibility = "hidden";
+    }
+
+    function createConversation(){
+        var owner = document.getElementById('owner').value;
+        var convName = document.getElementById('convNameBox').value;
+        var destDate = document.getElementById('destroyDateBox').value;
+
+        $.ajax({url: '/api/conversations/', type: "POST",
+             headers: {'Authorization': 'Bearer ' + userIdToken},
+             data: {"owner": owner, "convName": convName, "destroyDate": destDate}
+
+            }).then(function(result){
+                //do stuff with the result
+                if(result['status'] == '200'){
+                    document.getElementById('resultBox').value = "Success";
+                }
+                else{
+                    document.getElementById('resultBox').value = "Failure";
+
+                }
+                document.getElementById('results').style.visibility = "visible";
+
+            })
+
+
+    }
+
+
+</script>
+    <title>Create Conversation</title>
+</head>
+<body>
+New Conversation:<br><br>
+
+Owner: <input type="text" id="owner" readonly><br>
+Conversation Name: <input type="text" id="convNameBox"><br>
+Destroy Date: <input type="date" id="destroyDateBox"><br>
+ <input type="button" onclick="javascript:createConversation()" value="Create"/>
+
+
+<p>
+<div id="results">Result: <input type="text" id="resultBox" readonly></div>
+
+</body>
+</html>

@@ -3,11 +3,25 @@
 <head>
     {% include "standard_head.html" %}
 
+    <style>
+        table {
+            border: 1px dashed red;
+        }
+        td  {
+            border: 1px dashed blue;
+            padding: 10px;
+        }
+    </style>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
+    var conversationArray;
 
     //This function will be different for each page, but will be called by the same call in FirebaseHeader
     function loadPageData() {
+
+            loadAllConversations(userIdToken);
+
             document.getElementById('emailBox').value = localUser['email'];
             document.getElementById('fnameBox').value = localUser['fName'];
             document.getElementById('lnameBox').value = localUser['lName'];
@@ -16,16 +30,63 @@
         }
 
 
+    function loadAllConversations(userToken) {
+        $.ajax('/api/conversations/', {
+            headers: {'Authorization': 'Bearer ' + userIdToken}
+        //Store the results
+        }).then(function (result) {
+            return new Promise(function (resolve, reject) {
+                conversationArray = result['conversations'];
+                console.log("convos[0]: " + conversationArray[0]);
+                resolve();
+            })
+        //Populate the Conversation Table
+        }).then(function (result) {
+            var tab, tr, td, tn, row;
+
+            tableDiv = document.getElementById('conversationTable');
+            tab = document.createElement('table');
+            tr = document.createElement('tr');
+            td = document.createElement('td');
+            tn = document.createTextNode('Conv ID');
+            td.appendChild(tn);
+            tr.appendChild(td);
+            td = document.createElement('td');
+            tn = document.createTextNode('Conv Name');
+            td.appendChild(tn);
+            tr.appendChild(td);
+            tab.appendChild(tr);
+            for (row = 0; row < conversationArray.length; row++) {
+                tr = document.createElement('tr');
+                td = document.createElement('td');
+                tn = document.createTextNode(conversationArray[row]['id']);
+                td.appendChild(tn);
+                tr.appendChild(td);
+                td = document.createElement('td');
+                tn = document.createTextNode(conversationArray[row]['name']);
+                td.appendChild(tn);
+                tr.appendChild(td);
+                tab.appendChild(tr);
+            }
+            tableDiv.appendChild(tab);
+        })
+    }
+
+
+
 </script>
     <title>Manage</title>
 </head>
 <body>
 
-Email: <input type="text" id="emailBox"><br>
+Email: <input type="text" id="emailBox" readonly><br>
 First Name: <input type="text" id="fnameBox"><br>
 Last Name: <input type="text" id="lnameBox"><br>
-Date Joined: <input type="text" id="dateBox"><br>
+Date Joined: <input type="text" id="dateBox" readonly><br>
 Communication Preference: <input type="text" id="commPrefBox"><br>
 
+<p>
+
+<div id="conversationTable"/>
 </body>
 </html>

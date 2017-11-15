@@ -3,6 +3,7 @@ from source.views.Main import LandingPage
 from auth0_demo import Auth0LoginCallback, Auth0MainPage
 from source.views.Login import LoginPage
 from source.views.Manage import ManagePage
+from source.views.Create import CreatePage
 
 app = make_routes([
     # [START auth0 demo]
@@ -16,6 +17,7 @@ app = make_routes([
     # [END services]
 
     # [START views]
+    ('/create', CreatePage),
     ('/manage', ManagePage),
     ('/login', LoginPage),
     ('/.*', LandingPage)
