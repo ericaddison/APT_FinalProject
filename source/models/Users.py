@@ -7,18 +7,19 @@ class Users(ndb.Model):
     lName = ndb.StringProperty(indexed=False)
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
     prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
-
+    premium = ndb.BooleanProperty(indexed=True)
 
     def get_id(self):
         return long(self.key.id())
 
-    def get_user_data_dict(self):
-        return {"id": self.get_id(),
-                "email": self.email,
-                "fName": self.fName,
-                "lName": self.lName,
-                "joinDate": str(self.joinDate),
-                "prefComm": self.prefComm}
+    def get_full_data(self):
+        return {'id': self.get_id(),
+                'email': self.email,
+                'fName': self.fName,
+                'lName': self.lName,
+                'joinDate': str(self.joinDate),
+                'prefComm': self.prefComm,
+                'premium': self.premium}
 
     def commit(self):
         self.put()
@@ -34,9 +35,9 @@ class Users(ndb.Model):
         user = Users(email=email,
                      fName=fname,
                      lName=lname,
-                     prefComm=prefcomm
+                     prefComm=prefcomm,
+                     premium=False
                      )
-        print("email={}".format(email))
         user.put()
         return user
 
@@ -66,7 +67,10 @@ class Users(ndb.Model):
                 user = Users(email="test@example.com",
                              fName="Testy",
                              lName="Testerson",
-                             id=123456789)
+                             id=123456789,
+                             prefComm="email",
+                             premium=True
+                             )
                 user.put()
             return user
         else:
@@ -75,7 +79,9 @@ class Users(ndb.Model):
                 user = Users(email="serious@example.com",
                              fName="Lemon",
                              lName="Zest",
-                             id=987654321)
+                             id=987654321,
+                             prefComm="sms",
+                             premium=False)
                 user.put()
             return user
 

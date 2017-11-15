@@ -12,6 +12,7 @@ import time
 # set up two authorization headers, one for each dummy user
 headers1 = {"Authorization": "Bearer DEVTOKEN1"}
 headers2 = {"Authorization": "Bearer DEVTOKEN2"}
+headers3 = {"Authorization": "Bearer DEVTOKEN3"}
 
 
 # common setup function
@@ -23,6 +24,71 @@ def test_setup(test):
     test.conv_data = json.loads(r.content)['conversations']
     test.conv_id = test.conv_data['id']
     test.alias1 = test.conv_data['aliases'][0]
+
+
+class TestLiveApi_Users(unittest.TestCase):
+    def setUp(self):
+        test_setup(self)
+
+    def tearDown(self):
+        url = 'http://localhost:8080/api/conversations/{}'.format(self.conv_id)
+        req.delete(url, headers=headers1)
+
+    def test_create_user(self):
+        assert False
+
+    def test_get_user_notauthorized(self):
+        url = 'http://localhost:8080/api/users/123456789'
+        r = req.get(url, headers=headers2)
+        data = json.loads(r.content)
+        assert r.status_code == 401
+        assert data['status'] == 401
+
+    def test_get_user_authorized(self):
+        url = 'http://localhost:8080/api/users/123456789'
+        r = req.get(url, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        assert data['status'] == 200
+        assert 'user-settings' in data.keys()
+        assert data['user-settings']['email'] == "test@example.com"
+        assert data['user-settings']['id'] == 123456789
+
+    def test_update_user_notfound(self):
+        url = 'http://localhost:8080/api/users/1'
+        r = req.get(url, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 401
+        assert data['status'] == 401
+
+    def test_update_user_notauthorized(self):
+        url = 'http://localhost:8080/api/users/123456789'
+        r = req.put(url, data={'fname': 'Bob', 'lname': 'Schubert', 'prefcomm': 'web'},headers=headers2)
+        data = json.loads(r.content)
+        assert r.status_code == 401
+        assert data['status'] == 401
+
+    def test_update_user_authorized(self):
+        url = 'http://localhost:8080/api/users/123456789'
+        newfname = 'Bob{}'.format(random.randint(0, 100))
+        newlname = 'Schubert{}'.format(random.randint(0, 100))
+        r = req.put(url, data={'fname': newfname, 'lname': newlname, 'prefcomm': 'web'}, headers=headers1)
+        data = json.loads(r.content)
+        assert r.status_code == 200
+        assert data['status'] == 200
+        assert data['user']['fName'] == newfname
+        assert data['user']['lName'] == newlname
+        assert data['user']['prefComm'] == 'web'
+
+    def test_delete_user_notfound(self):
+        assert False
+
+    def test_delete_user_notauthorized(self):
+        assert False
+
+    def test_delete_user_authorized(self):
+        assert False
+
 
 
 class TestLiveApi_Conversation(unittest.TestCase):

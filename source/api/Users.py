@@ -2,7 +2,7 @@ from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESP
 import source.framework.constants as c
 from source.models.Users import Users
 
-WRONG_USER_RESPONSE = {'message': 'Attempted to access non-self user', 'status': 403}
+WRONG_USER_RESPONSE = {'message': 'Attempted to access non-self user', 'status': 401}
 
 
 # [BEGIN API python methods]
@@ -11,7 +11,7 @@ def get_user(user, user_id):
     """Get user settings"""
     if user.get_id() != long(user_id):
         return WRONG_USER_RESPONSE
-    return {'user-settings': user.get_user_data_dict(), 'status': "200"}
+    return {'user': user.get_full_data(), 'status': 200}
 
 
 def update_user(user, user_id, fname="", lname="", prefcomm=""):
@@ -26,7 +26,7 @@ def update_user(user, user_id, fname="", lname="", prefcomm=""):
     if prefcomm:
         user.prefComm = prefcomm
     user.commit()
-    return {'user-settings': user.get_user_data_dict(), 'status': "200"}
+    return {'user': user.get_full_data(), 'status': 200}
 
 
 def create_user(email, fname, lname, prefcomm):
@@ -42,7 +42,7 @@ def delete_user(user, user_id):
     if user.get_id() != long(user_id):
         return WRONG_USER_RESPONSE
     user.delete()
-    return {'message': 'Deleted user {}'.format(user_id), 'status': "200"}
+    return {'message': 'Deleted user {}'.format(user_id), 'status': 200}
 
 # [END API python methods]
 
