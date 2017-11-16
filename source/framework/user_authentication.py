@@ -37,7 +37,7 @@ def user_authentication(auth_header):
     if verify_token(access_token):
         print("***Firebase User Verified")
         user = get_user_from_token(access_token)
-    return user[0]
+    return user
 
 
 def get_user_from_token(access_token):

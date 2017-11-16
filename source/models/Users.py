@@ -53,7 +53,7 @@ class Users(ndb.Model):
         if email:
             user_query0 = Users.query()
             user_query1 = user_query0.filter(Users.email == email)
-            return user_query1.fetch()
+            return user_query1.get()
         elif user_id:
             try:
                 return ndb.Key('Users', long(user_id)).get()

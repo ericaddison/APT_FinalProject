@@ -1,5 +1,4 @@
 import unittest
-import source.config.authentication as auth
 import requests as req
 import json
 import random
