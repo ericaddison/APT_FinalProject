@@ -3,7 +3,7 @@
 <head>
     {% include "standard_head.html" %}
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
 
     //This function will be different for each page, but will be called by the same call in FirebaseHeader
@@ -22,7 +22,7 @@
 
         $.ajax({url: '/api/conversations/', type: "POST",
              headers: {'Authorization': 'Bearer ' + userIdToken},
-             data: {"owner": owner, "convName": convName, "destroyDate": destDate}
+             data: {"owner": owner, "conv_name": convName, "destroy_date": destDate}
 
             }).then(function(result){
                 //do stuff with the result
