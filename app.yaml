@@ -10,6 +10,11 @@ handlers:
   script: source.admin.Routes.app
 # [END Admin]
 
+# [START Framework]
+- url: /_ah/.*
+  script: source.framework.Routes.app
+# [END Framework]
+
 # [START API services]
 - url: /api/.*
   script: source.api.Routes.app
@@ -42,3 +47,6 @@ libraries:
 - name: ssl
   version: latest
 # [END libraries]
+
+inbound_services:
+- mail

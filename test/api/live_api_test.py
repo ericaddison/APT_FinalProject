@@ -2,6 +2,7 @@ import unittest
 import requests as req
 import json
 import random
+from pprint import pprint
 import time
 
 # For these tests, make sure source.config.authentication has AUTH_PROVIDER set to auth_demo
@@ -352,6 +353,7 @@ class TestLiveApi_ConvMessages(unittest.TestCase):
         data = json.loads(r.content)
         assert r.status_code == 200
         msg_id = data['messages']['id']
+        pprint(data)
 
         # attempt to edit not authorized
         url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(self.conv_id, msg_id)
@@ -361,6 +363,7 @@ class TestLiveApi_ConvMessages(unittest.TestCase):
         data = json.loads(r.content)
         assert r.status_code == 200
         assert data['status'] == 200
+        pprint(data)
 
         # get the messages
         url = 'http://localhost:8080/api/conversations/{}/messages/'.format(self.conv_id)
@@ -373,6 +376,8 @@ class TestLiveApi_ConvMessages(unittest.TestCase):
         assert msg['text'] == newtext
         assert msg['mediaURL'] == newmedia
         assert len(msg['edits']) == 2
+
+        pprint(data)
 
     def test_post_message_authorized_msgcount_onemessage(self):
         # get messages and record message count
