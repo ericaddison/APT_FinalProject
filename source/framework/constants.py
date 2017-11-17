@@ -11,6 +11,9 @@ reveal_owner_parm = "reveal_owner"
 restrict_comms_parm = "restrict_comms"
 password_parm = "password"
 
+commoption_parm = "comm_option"
+commdetail_parm = "comm_option"
+
 text_param = "text"
 media_url_param = "media_url"
 

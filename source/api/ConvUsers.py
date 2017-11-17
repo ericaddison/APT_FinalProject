@@ -1,5 +1,6 @@
 from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESPONSE
 from source.api.api_helpers import process_apicall_checkconv_checkuser, process_apicall_checkconv
+import source.framework.constants as c
 
 
 # [BEGIN API python methods]
@@ -15,12 +16,12 @@ def get_convusers(user, conv_id):
     return process_apicall_checkconv_checkuser(user, conv_id, get_aliases)
 
 
-def create_convuser(user, conv_id):
+def create_convuser(user, conv_id, comm_option, comm_detail):
     """Create a new convuser (user join conversation)"""
 
     # method to call if valid conversation
     def join_conv(user, conv, response):
-        cuser = conv.add_user(user)
+        cuser = conv.add_user(user, comm_option, comm_detail)
         response['alias'] = cuser
         response['conversation'] = conv.get_full_data()
         return response
@@ -60,7 +61,11 @@ class ConvUsersApi(ApiServiceHandler):
         """Create ConvUser (user join conversation) API"""
         if args[1]:
             return NOT_FOUND_RESPONSE
-        return create_convuser(user, args[0])
+
+        comm_option = self.get_request_param(c.commoption_parm)
+        comm_detail = self.get_request_param(c.commdetail_parm)
+
+        return create_convuser(user, args[0], comm_option, comm_detail)
 
     def delete_hook(self, user, *args):
         """Delete convUser (user leave conversation) API"""

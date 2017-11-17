@@ -26,6 +26,10 @@ class Conversations(ndb.Model):
         aliases = ndb.get_multi(self.aliases)
         return [alias.displayName for alias in aliases if alias.active]
 
+    def get_active_convusers(self):
+        aliases = ndb.get_multi(self.aliases)
+        return [convuser for convuser in aliases if convuser.active]
+
     def get_active_users(self):
         aliases = ndb.get_multi(self.aliases)
         return [alias.user for alias in aliases if alias.active]
@@ -80,7 +84,7 @@ class Conversations(ndb.Model):
             return None
         return cuser.displayName
 
-    def add_user(self, user):
+    def add_user(self, user, comm_option, comm_detail):
         """Add a user to the conversation. Return displayName (alias)"""
         # check if user already in conversation
         users = self.get_active_users()
@@ -93,7 +97,7 @@ class Conversations(ndb.Model):
 
         # if ConvUser does not exist, create
         if not cuser:
-            cuser = ConvUsers.create(user, self, self.idPolicy)
+            cuser = ConvUsers.create(user, self, self.idPolicy, comm_option, comm_detail)
             self.aliases.append(cuser.key)
         else:
             cuser.set_active(True)
@@ -141,10 +145,10 @@ class Conversations(ndb.Model):
     def get_conversations_by_name(cls, name):
         query0 = Conversations.query()
         query1 = query0.filter(Conversations.name == name)
-        return query1.get()
+        return query1.fetch()
 
     @classmethod
-    def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
+    def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash, comm_option='', comm_detail=''):
 
         conv = cls.get_conversations_by_name(name)
         if conv:
@@ -164,7 +168,7 @@ class Conversations(ndb.Model):
 
         # set owner alias
         conv.put()
-        conv.add_user(owner)
+        conv.add_user(owner, comm_option, comm_detail)
         return True, conv
 
     @classmethod

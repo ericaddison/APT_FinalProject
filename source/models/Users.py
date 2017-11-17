@@ -9,6 +9,7 @@ class Users(ndb.Model):
     lName = ndb.StringProperty(indexed=False)
     joinDate = ndb.DateTimeProperty(auto_now_add=True)
     prefComm = ndb.StringProperty(indexed=False) #Preferred Communication Method
+    prefCommDetail = ndb.StringProperty(indexed=False) #Preferred Communication Detail (email, phone number, etc)
     premium = ndb.BooleanProperty(indexed=True)
     verified = ndb.BooleanProperty(indexed=True)
 
@@ -46,14 +47,18 @@ class Users(ndb.Model):
         self.key.delete()
 
     @classmethod
-    def create(cls, email, fname, lname, prefcomm="", verified=False):
+    def create(cls, email, fname, lname, verified=False, prefcomm='email', prefcomm_detail=''):
         if Users.get_a_user(email):
             return None
+
+        if prefcomm == 'email' and not prefcomm_detail:
+            prefcomm_detail = email
 
         user = Users(email=email,
                      fName=fname,
                      lName=lname,
                      prefComm=prefcomm,
+                     prefCommDetail = prefcomm_detail,
                      premium=False,
                      verified=verified
                      )

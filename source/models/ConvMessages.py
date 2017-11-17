@@ -23,6 +23,9 @@ class ConvMessages(ndb.Model):
                 'userAlias': self.alias,
                 'postDate': str(self.postDate)}
 
+    def get_conversation(self):
+        return self.conv.get()
+
     def check_owner(self, user):
         """Check if the given user is the owner"""
         return user.key == self.user
@@ -41,6 +44,7 @@ class ConvMessages(ndb.Model):
         data['deleted'] = self.deleted
         data['convName'] = self.conv.get().name
         data['edits'] = self.edits
+        data['id'] = self.get_id()
         return data
 
     def delete(self):

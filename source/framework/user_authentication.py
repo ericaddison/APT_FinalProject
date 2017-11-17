@@ -150,7 +150,7 @@ def get_user_from_token_firebase(access_token):
         names = userDict.get('name').split()
         verified = (userDict['firebase']['sign_in_provider'] != 'password')
         if len(names) > 1:
-            user = Users.create(emailAddy, names[0], names[1], None, verified)
+            user = Users.create(emailAddy, names[0], names[1], verified)
         else:
-            user = Users.create(emailAddy, names[0], None, None, verified)
+            user = Users.create(emailAddy, names[0], None, verified)
         return user

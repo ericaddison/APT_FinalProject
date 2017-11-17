@@ -1,6 +1,8 @@
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from source.api.ConvMessages import create_message
 from source.models.Users import Users
+from source.models.ConvMessages import ConvMessages
+import source.framework.communicate as comm
 import logging
 import re
 
@@ -87,11 +89,12 @@ class ConversationMailHandler(InboundMailHandler):
             message.append(decoded_body)
 
         response = create_message(user, convID, " ".join(message), "")
-
         logging.debug(response)
 
         # broadcast to others
-
+        convmsg = ConvMessages.get_by_id(response['messages']['id'])
+        if convmsg:
+            comm.broadcast_message(convmsg)
 
     @classmethod
     def send_wtf_email(cls, to_address):
