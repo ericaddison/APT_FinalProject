@@ -1,6 +1,10 @@
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 import logging
 
+# Incoming email assumptions:
+#   - subject should be the conversation name ... but this is not necessary
+#   - TO address should be conversation_<conv_id>@hailing-frequencies-2017.appspotmail.com
+
 
 class MailHandler(InboundMailHandler):
     """Web handler to incoming emails"""
