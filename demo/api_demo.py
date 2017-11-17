@@ -174,15 +174,15 @@ conv_id = r0['conversations']['id']
 
 # Post a message and edit it a few times
 
-print("Edit Message")
-url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
-r = req.post(url, data={"text": "Messagessdf1", "media_url": "http://www.goggles.com"}, headers=headers1)
-msg_id = json.loads(r.content)['messages']['id']
-
-url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
-req.put(url, data={"text": "Messagess1", "media_url": "http://www.goggle.com"}, headers=headers1)
-req.put(url, data={"text": "Message", "media_url": "http://www.google.com"}, headers=headers1)
-
-url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
-r = req.get(url, headers=headers1)
-process_response(url, r)
+# print("Edit Message")
+# url = 'http://localhost:8080/api/conversations/{}/messages/'.format(conv_id)
+# r = req.post(url, data={"text": "Messagessdf1", "media_url": "http://www.goggles.com"}, headers=headers1)
+# msg_id = json.loads(r.content)['messages']['id']
+#
+# url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
+# req.put(url, data={"text": "Messagess1", "media_url": "http://www.goggle.com"}, headers=headers1)
+# req.put(url, data={"text": "Message", "media_url": "http://www.google.com"}, headers=headers1)
+#
+# url = 'http://localhost:8080/api/conversations/{}/messages/{}'.format(conv_id, msg_id)
+# r = req.get(url, headers=headers1)
+# process_response(url, r)

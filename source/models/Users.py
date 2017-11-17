@@ -1,4 +1,6 @@
 from google.appengine.ext import ndb
+from source.models.ConvUsers import ConvUsers
+from source.models.Conversations import Conversations
 
 
 class Users(ndb.Model):
@@ -14,7 +16,7 @@ class Users(ndb.Model):
         return long(self.key.id())
 
     def get_full_data(self):
-        return {'id': self.get_id(),
+        response= {'id': self.get_id(),
                 'email': self.email,
                 'fName': self.fName,
                 'lName': self.lName,
@@ -22,6 +24,20 @@ class Users(ndb.Model):
                 'prefComm': self.prefComm,
                 'premium': self.premium,
                 'verified': self.verified}
+
+        convs = {'owned': self.get_owned_conversations(), 'joined': self.get_owned_conversations()}
+        response['conversations'] = convs
+
+        return response
+
+    def get_joined_conversations(self):
+        query0 = ConvUsers.query()
+        convs = query0.filter(ConvUsers.user == self.key).fetch()
+        return [conv.get_basic_data() for conv in convs]
+
+    def get_owned_conversations(self):
+        convs = Conversations.get_conversation_by_owner(self)
+        return [conv.get_basic_data() for conv in convs]
 
     def commit(self):
         self.put()

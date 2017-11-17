@@ -44,7 +44,8 @@ class Conversations(ndb.Model):
 
     def get_basic_data(self):
         return {'id': self.get_id(),
-                'name': self.name}
+                'name': self.name,
+                'destroyDate': str(self.destroyDate)}
 
     def get_full_data(self):
         return {'id': self.get_id(),
@@ -132,8 +133,8 @@ class Conversations(ndb.Model):
         return ndb.Key('Conversations', long(convID)).get()
 
     @classmethod
-    def get_conversation_by_owner(cls, ownerID):
-        return ndb.query(Conversations.owner == ownerID)
+    def get_conversation_by_owner(cls, owner):
+        return Conversations.query(Conversations.owner == owner.key).fetch()
 
     @classmethod
     def get_conversations_by_name(cls, name):
