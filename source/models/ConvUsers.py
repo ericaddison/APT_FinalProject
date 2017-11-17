@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from source.models.id_policies import *
+import source.framework.SendGrid as sg
 
 
 # commOption is in ['web', 'email', 'sms']
@@ -19,6 +20,7 @@ class ConvUsers(ndb.Model):
 
     def set_active(self, active):
         self.active = active
+        self.send_welcome_message()
         self.put()
 
     @classmethod
@@ -39,6 +41,32 @@ class ConvUsers(ndb.Model):
         cuser.displayName = get_name(conv, colors_policy)
         cuser.put()
         return cuser
+
+    def send_welcome_message(self):
+        conv = self.conv.get()
+        if self.commOption == 'email':
+
+            email_text = """
+            Hello!
+
+            Welcome to the conversation \"{}\" on Hailing-Frequencies! We hope you'll have a great time.
+
+            To interact with this conversation via email, just respond to this email message, or any other email you 
+            receive regarding this conversation.
+            
+            Your alias for this conversation will be {}. As always, your true name and email address will not be revealed
+            to the other users in the conversation.
+            
+            Happy hailing!
+            
+            -The HF Team  
+            """.format(conv.name, self.alias)
+
+            sg.send_email_from_conversation(self.commDetail,
+                                            conv.get_id(),
+                                            "Welcome to {}!".format(conv.name),
+                                            email_text
+                                            )
 
     @classmethod
     def get_by_user_and_conv(cls, user, conv):

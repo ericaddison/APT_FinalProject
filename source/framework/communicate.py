@@ -1,11 +1,20 @@
 import logging
 import source.framework.SendGrid as sg
+try:
+    import source.config.authentication as conf
+except ImportError:
+    import source.config.authentication_dummy as conf
+
 # interface to send messages from the comm options: web, email, sms
 # currently sends to ALL, including self
+
 
 def broadcast_message(convmsg):
     """Send new message to all users of a conversation"""
     logging.debug("Sending message \"{}\" from {} to all".format(convmsg.get_text(), convmsg.alias))
+
+    if conf.AUTH_PROVIDER == conf.auth_demo:
+        return
 
     conv = convmsg.get_conversation()
 
@@ -24,7 +33,10 @@ def broadcast_message(convmsg):
 
 def send_to_web(convmsg, comm_detail):
     logging.debug('sending web message to {}'.format(comm_detail))
-    sg.send_email(comm_detail, 'conversation_{}'.format(convmsg.get_conversation().get_id()), convmsg.get_text())
+    sg.send_email_from_conversation(comm_detail,
+                                      convmsg.get_conversation(),
+                                      'Message from {}'.format(convmsg.alias),
+                                      convmsg.get_text())
 
 
 def send_to_email(convmsg, comm_detail):
