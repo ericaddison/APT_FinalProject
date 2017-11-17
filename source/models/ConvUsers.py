@@ -1,3 +1,4 @@
+import logging
 from google.appengine.ext import ndb
 from source.models.id_policies import *
 import source.framework.SendGrid as sg
@@ -15,10 +16,11 @@ class ConvUsers(ndb.Model):
     commOption = ndb.StringProperty()
     commDetail = ndb.StringProperty()
 
-    def get_user_names_by_convid(self, convID):
-        return #list of display names
+    def get_id(self):
+        return long(self.key.id())
 
     def set_active(self, active):
+        logging.debug("Setting cuser {} active".format(self.get_id()))
         self.active = active
         self.send_welcome_message()
         self.put()
@@ -43,6 +45,7 @@ class ConvUsers(ndb.Model):
         return cuser
 
     def send_welcome_message(self):
+        logging.debug("Sending welcome message to {}".format(self.get_id()))
         conv = self.conv.get()
         if self.commOption == 'email':
 

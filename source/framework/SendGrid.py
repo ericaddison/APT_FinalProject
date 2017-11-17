@@ -5,6 +5,7 @@ import logging
 
 
 def send_email(to, sender, subject, text):
+    logging.debug('sending SendGrid email to {}'.format(comm_detail))
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
     from_email = Email("{}@{}".format(sender, EMAIL_DOMAIN))
     to_email = Email(to)

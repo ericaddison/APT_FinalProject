@@ -1,6 +1,6 @@
 import urllib2
 import json
-from pprint import pprint
+import logging
 import lib.jwt as jwt
 from source.models.Users import Users
 
@@ -25,17 +25,16 @@ def user_authentication(auth_header):
 
     parts = auth_header.split()
     if len(parts) != 2:
-        print("user_authentication(): improper authorization header length")
+        logging.warning("user_authentication(): improper authorization header length")
         return None
 
     if parts[0].lower() != 'bearer':
-        print("user_authentication(): not a bearer header")
+        logging.warning("user_authentication(): not a bearer header")
         return None
 
     access_token = parts[1]
 
     if verify_token(access_token):
-        print("***Firebase User Verified")
         user = get_user_from_token(access_token)
     return user
 
@@ -50,7 +49,7 @@ def get_user_from_token(access_token):
 
 
 def verify_token(access_token):
-    print("Attempting to verify {0} access_token {1}".format(conf.AUTH_PROVIDER, access_token))
+    logging.debug("Attempting to verify {0} access_token {1}".format(conf.AUTH_PROVIDER, access_token))
     if conf.AUTH_PROVIDER == conf.auth_auth0:
         return verify_token_auth0(access_token)
     elif conf.AUTH_PROVIDER == conf.auth_demo:
@@ -69,7 +68,9 @@ def verify_token_debug(access_token):
 def verify_token_firebase(access_token):
     data = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     if data['aud'] == conf.FIREBASE_AUD and data['iss'] == conf.FIREBASE_ISS:
+        logging.info("***Firebase User Verified")
         return True
+    logging.info("***Firebase User NOT Verified")
     return False
 
 
@@ -81,12 +82,10 @@ def verify_token_auth0(access_token):
     try:
         unverified_header = jwt.get_unverified_header(access_token)
     except jwt.JWTError:
-        print("Invalid header: Use an RS256 signed JWT Access Token")
+        logging.warning("Invalid header: Use an RS256 signed JWT Access Token")
 
     if unverified_header["alg"] == "HS256":
-        print("Invalid header: Use an RS256 signed JWT Access Token")
-
-    print(unverified_header)
+        logging.warning("Invalid header: Use an RS256 signed JWT Access Token")
 
     rsa_key = {}
     for key in jwks["keys"]:
@@ -108,10 +107,9 @@ def verify_token_auth0(access_token):
                 issuer="https://" + conf.AUTH0_DOMAIN + "/"
             )
         except Exception, e:
-            print(e.message)
-            print("Unable to parse authentication token.")
+            logging.warning(e.message)
+            logging.warning("Unable to parse authentication token.")
 
-    print("success???");
     return False
 
 
@@ -122,7 +120,7 @@ def get_user_from_token_auth0(access_token):
     response = urllib2.urlopen(userinfo)
     data = response.read()
     #return get_user_from_email(data.email)
-    print("get_user_from_token(): Failed to find user")
+    logging.debug("get_user_from_token(): Failed to find user")
     return None
 
 
@@ -138,10 +136,9 @@ def get_user_from_token_debug(access_token):
 def get_user_from_token_firebase(access_token):
     userDict = google.oauth2.id_token.verify_firebase_token(access_token, google.auth.transport.requests.Request())
     emailAddy = userDict.get('email')
-    pprint(userDict)
-    print "***emailAddy: ", emailAddy
+    logging.debug("***emailAddy: {}".format(emailAddy))
     userAcct = Users.get_a_user(emailAddy)
-    print "***userAcct: ", userAcct
+    logging.debug("***userAcct: {}".format(userAcct))
     if userAcct:
         return userAcct
 

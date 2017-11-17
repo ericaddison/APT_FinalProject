@@ -2,6 +2,7 @@ from google.appengine.ext import ndb
 from datetime import datetime
 from source.models.ConvUsers import ConvUsers
 from source.models.id_policies import colors_policy
+import logging
 import random
 
 
