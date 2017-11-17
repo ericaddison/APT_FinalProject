@@ -3,6 +3,7 @@ from source.config.defaults import DEFAULT_CONVERSATION_LIFETIME_SECONDS
 import source.framework.constants as c
 from source.models.Conversations import Conversations, id_policies
 from datetime import datetime
+from dateutil import parser
 import time
 from source.api.api_helpers import process_apicall_checkconv_checkuser
 
@@ -37,8 +38,8 @@ def create_conversation(user, name, destroy_date, id_policy, view_after_expire, 
     id_policy = id_policy if id_policy in id_policies else "colors"
 
     three_months = datetime.fromtimestamp(time.time()+DEFAULT_CONVERSATION_LIFETIME_SECONDS)
-    destroy_date = destroy_date if destroy_date else three_months
-    destroy_date = destroy_date if destroy_date>datetime.now() else three_months
+    destroy_date = parser.parse(destroy_date) if destroy_date else three_months
+    destroy_date = destroy_date if destroy_date > datetime.now() else three_months
 
     view_after_expire = False if view_after_expire.lower() == 'false' else True
     reveal_owner = False if reveal_owner.lower() == 'false' else True

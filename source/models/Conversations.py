@@ -126,7 +126,8 @@ class Conversations(ndb.Model):
 
     @classmethod
     def get_all_active_conversations(cls):
-        return Conversations.query(Conversations.destroyDate > datetime.now())
+        allconvs = Conversations.query()
+        return [conv for conv in allconvs if conv.destroyDate > datetime.now()]
 
     @classmethod
     def get_conversation_by_id(cls, convID):
@@ -140,8 +141,7 @@ class Conversations(ndb.Model):
     def get_conversations_by_name(cls, name):
         query0 = Conversations.query()
         query1 = query0.filter(Conversations.name == name)
-        query2 = query1.filter(Conversations.destroyDate > datetime.now())
-        return query2.fetch()
+        return query1.get()
 
     @classmethod
     def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
