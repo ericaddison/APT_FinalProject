@@ -1,5 +1,5 @@
 import logging
-
+import source.framework.SendGrid as sg
 # interface to send messages from the comm options: web, email, sms
 # currently sends to ALL, including self
 
@@ -24,6 +24,7 @@ def broadcast_message(convmsg):
 
 def send_to_web(convmsg, comm_detail):
     logging.debug('sending web message to {}'.format(comm_detail))
+    sg.send_email(comm_detail, 'conversation_{}'.format(convmsg.get_conversation().get_id()), convmsg.get_text())
 
 
 def send_to_email(convmsg, comm_detail):
