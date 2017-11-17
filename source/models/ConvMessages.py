@@ -26,6 +26,9 @@ class ConvMessages(ndb.Model):
     def get_conversation(self):
         return self.conv.get()
 
+    def get_conversation_id(self):
+        return self.conv.id()
+
     def check_owner(self, user):
         """Check if the given user is the owner"""
         return user.key == self.user

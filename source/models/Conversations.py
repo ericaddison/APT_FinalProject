@@ -100,18 +100,14 @@ class Conversations(ndb.Model):
         if not cuser:
             cuser = ConvUsers.create(user, self, self.idPolicy, comm_option, comm_detail)
             self.aliases.append(cuser.key)
-        else:
-            cuser.set_active(True)
         self.put()
+        cuser.set_active(True)
         return cuser.displayName
 
     def remove_user(self, user):
         """Remove a user from the conversation. Return displayName (alias)"""
         # check if user already in conversation
         users = self.get_active_users()
-
-        print(users)
-        print(user)
 
         if user.key not in users:
             return None

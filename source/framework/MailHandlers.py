@@ -25,6 +25,7 @@ class GeneralMailHandler(InboundMailHandler):
         logging.info("date: " + email.date)
 
         html_bodies = email.bodies('text/html')
+        logging.info("I see {} html bodies")
 
         for content_type, body in html_bodies:
             logging.info('content_type: ' + content_type)
@@ -32,6 +33,7 @@ class GeneralMailHandler(InboundMailHandler):
             logging.info('decoded_body: ' + decoded_body)
 
         plaintext_bodies = email.bodies('text/plain')
+        logging.info("I see {} plaintext bodies")
 
         for content_type, body in plaintext_bodies:
             logging.info('content_type: ' + content_type)
@@ -44,7 +46,7 @@ class ConversationMailHandler(InboundMailHandler):
 
     def __init__(self, arg1, arg2):
         super(InboundMailHandler, self).__init__(arg1, arg2)
-        self.convid_regex = re.compile('conversation_(\d+)@.*')
+        self.convid_regex = re.compile('.*_(\d+)@.*')
         self.email_regex = re.compile('.*<(.*)>')
 
     def receive(self, email):
@@ -80,21 +82,18 @@ class ConversationMailHandler(InboundMailHandler):
         # put message in conversation
         message = []
 
-        plaintext_bodies = email.bodies('text/plain')
+        html_bodies = email.bodies('text/html')
 
-        for content_type, body in plaintext_bodies:
+        for content_type, body in html_bodies:
             logging.info('content_type: ' + content_type)
             decoded_body = body.decode()
             logging.info('decoded_body: ' + decoded_body)
             message.append(decoded_body)
 
-        response = create_message(user, convID, " ".join(message), "")
-        logging.debug(response)
 
-        # broadcast to others
-        convmsg = ConvMessages.get_by_id(response['messages']['id'])
-        if convmsg:
-            comm.broadcast_message(convmsg)
+        # create message, which includes message broadcast to conversation
+        response = create_message(user, convID, " ".join(message), "")
+        logging.debug("Create message response: {}".format(response))
 
     @classmethod
     def send_wtf_email(cls, to_address):

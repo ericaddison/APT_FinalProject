@@ -4,6 +4,6 @@ import webapp2
 
 app = webapp2.WSGIApplication(
     routes=[
-        ('/_ah/mail/conversation_\d+@hailing-frequencies-2017\.appspotmail\.com', ConversationMailHandler),
+        ('/_ah/mail/.*_\d+@hailing-frequencies-2017\.appspotmail\.com', ConversationMailHandler),
         ('/_ah/mail/.*', GeneralMailHandler)
     ], debug=True)

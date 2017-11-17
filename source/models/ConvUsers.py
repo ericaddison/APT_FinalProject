@@ -25,6 +25,9 @@ class ConvUsers(ndb.Model):
         self.send_welcome_message()
         self.put()
 
+    def get_conversation(self):
+        return self.conv.get()
+
     @classmethod
     def create(cls, user, conv, id_policy, comm_option, comm_detail):
 
@@ -50,23 +53,23 @@ class ConvUsers(ndb.Model):
         if self.commOption == 'email':
 
             email_text = """
-            Hello!
+            Hello!<br><br>
 
-            Welcome to the conversation \"{}\" on Hailing-Frequencies! We hope you'll have a great time.
+            Welcome to the conversation \"{0}\" on Hailing-Frequencies! We hope you'll have a great time.<br><br>
 
             To interact with this conversation via email, just respond to this email message, or any other email you 
-            receive regarding this conversation.
+            receive regarding \"{0}\".<br><br>
             
-            Your alias for this conversation will be {}. As always, your true name and email address will not be revealed
-            to the other users in the conversation.
+            Your alias for this conversation will be {1}. As always, your true name and email address will not be revealed
+            to the other users.<br><br><br>
             
-            Happy hailing!
+            Happy hailing!<br><br>
             
             -The HF Team  
-            """.format(conv.name, self.alias)
+            """.format(conv.name, self.displayName)
 
-            sg.send_email_from_conversation(self.commDetail,
-                                            conv.get_id(),
+            sg.send_email_from_convuser(self.commDetail,
+                                            self,
                                             "Welcome to {}!".format(conv.name),
                                             email_text
                                             )

@@ -33,14 +33,14 @@ def broadcast_message(convmsg):
 
 def send_to_web(convmsg, comm_detail):
     logging.debug('sending web message to {}'.format(comm_detail))
-    sg.send_email_from_conversation(comm_detail,
-                                      convmsg.get_conversation(),
-                                      'Message from {}'.format(convmsg.alias),
-                                      convmsg.get_text())
 
 
 def send_to_email(convmsg, comm_detail):
     logging.debug('sending email message to {}'.format(comm_detail))
+    sg.send_email_from_convmsg(comm_detail,
+                                    convmsg,
+                                    '{}'.format(convmsg.get_conversation().name)
+                               )
 
 
 def send_to_sms(convmsg, comm_detail):

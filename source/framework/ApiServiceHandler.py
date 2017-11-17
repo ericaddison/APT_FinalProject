@@ -1,5 +1,6 @@
 from source.framework.BaseHandler import BaseHandler
 from source.framework.user_authentication import user_authentication
+import logging
 
 BAD_AUTH_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
 NOT_AUTH_RESPONSE = {'status': 401, 'message': 'Not authorized'}
@@ -19,9 +20,9 @@ class ApiServiceHandler(BaseHandler):
         user = None
         auth_header = self.get_auth_header()
         if auth_header:
-           user = user_authentication(auth_header)
+            user = user_authentication(auth_header)
         else:
-           print("ApiServiceHandler.process(): no auth_header found")
+            logging.warning("ApiServiceHandler.process(): no auth_header found")
 
         # if user not verified or found, return bad response
         if not user:
@@ -32,7 +33,7 @@ class ApiServiceHandler(BaseHandler):
         if 'status' in response.keys():
             self.response.set_status(response['status'])
 
-        print "***process(): response: ", response
+        logging.debug("***process(): response: {}".format(response))
         self.write_dictionary_response(response)
 
     def get(self, *args):
