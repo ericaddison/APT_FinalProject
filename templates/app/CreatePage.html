@@ -4,44 +4,8 @@
     {% include "standard_head.html" %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
+<script src="/js/create_js.js" type="text/javascript"></script>
 
-    //This function will be different for each page, but will be called by the same call in FirebaseHeader
-
-    //def create(cls, owner, name, destroy_date, id_policy, view_after_expire, reveal_owner, restrict_comms, password_hash):
-
-    function loadPageData() {
-        document.getElementById('owner').value = localUser['id'];
-        document.getElementById('results').style.visibility = "hidden";
-    }
-
-    function createConversation(){
-        var owner = document.getElementById('owner').value;
-        var convName = document.getElementById('convNameBox').value;
-        var destDate = document.getElementById('destroyDateBox').value;
-
-        $.ajax({url: '/api/conversations/', type: "POST",
-             headers: {'Authorization': 'Bearer ' + userIdToken},
-             data: {"owner": owner, "conv_name": convName, "destroy_date": destDate}
-
-            }).then(function(result){
-                //do stuff with the result
-                if(result['status'] == '200'){
-                    document.getElementById('resultBox').value = "Success";
-                }
-                else{
-                    document.getElementById('resultBox').value = "Failure";
-
-                }
-                document.getElementById('results').style.visibility = "visible";
-
-            })
-
-
-    }
-
-
-</script>
     <title>Create Conversation</title>
 </head>
 <body>
