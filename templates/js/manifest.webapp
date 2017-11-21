@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "name": "Hailing Frequencies",
+  "launch_path": "/templates/app/ViewPage.html",
+  "description": "Chat App",
+  "developer": {
+    "name": "UT APT_FA2017",
+    "url": "https://www.utexas.edu"
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "default_locale": "en",
+  "permissions": {
+  },
+  "locales": {
+    "en": {
+      "name": "Hailing Frequencies",
+      "description": "Chat App"
+    }
+  }
+}

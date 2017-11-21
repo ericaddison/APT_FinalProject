@@ -1,5 +1,11 @@
     function loadPageData() {
 
+    console.log("firebaseUser: " + userIdToken);
+
+            if(userIdToken == null){
+                window.location.replace("/login");
+            }
+
             loadAllConversations(userIdToken);
 
             document.getElementById('emailBox').value = localUser['email'];
@@ -24,23 +30,19 @@
             tab = document.createElement('table');
             tr = document.createElement('tr');
             td = document.createElement('td');
-            tn = document.createTextNode('Conv ID');
-            td.appendChild(tn);
-            tr.appendChild(td);
-            td = document.createElement('td');
-            tn = document.createTextNode('Conv Name');
+            tn = document.createTextNode('Conversations:');
             td.appendChild(tn);
             tr.appendChild(td);
             tab.appendChild(tr);
             for (row = 0; row < conversationArray.length; row++) {
                 tr = document.createElement('tr');
                 td = document.createElement('td');
-                tn = document.createTextNode(conversationArray[row]['id']);
-                td.appendChild(tn);
-                tr.appendChild(td);
-                td = document.createElement('td');
                 tn = document.createTextNode(conversationArray[row]['name']);
-                td.appendChild(tn);
+                convLink = document.createElement('a');
+                myLink = '/view/' + conversationArray[row]['id'];
+                convLink.setAttribute('href', myLink);
+                convLink.appendChild(tn);
+                td.appendChild(convLink);
                 tr.appendChild(td);
                 tab.appendChild(tr);
             }
@@ -48,4 +50,4 @@
         })
     }
 
-
+//"<a href='/conversation/" + conversationArray[row]['id'] + "'>" + conversationArray[row]['name'] + "</a><br>"

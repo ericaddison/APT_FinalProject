@@ -3,6 +3,7 @@ from source.views.Main import LandingPage
 from source.views.Login import LoginPage
 from source.views.Manage import ManagePage
 from source.views.Create import CreatePage
+from source.views.View import ViewPage
 
 app = make_routes([
     # [START services]
@@ -11,6 +12,7 @@ app = make_routes([
     # [END services]
 
     # [START views]
+    ('/view/.*', ViewPage),
     ('/create', CreatePage),
     ('/manage', ManagePage),
     ('/login', LoginPage),

@@ -1,9 +1,27 @@
 {% include "FirebaseHeader.html" %}
+
+
+<!-- THIS CSS IS REQUIRED FOR THE CHAT APP ON THE /view PAGE TO WORK -->
+  <!-- Material Design Lite -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.orange-indigo.min.css">
+  <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+  <!-- App Styling -->
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+   <link rel="stylesheet" href="css/main.css">
+
+
 <h1>Hailing Frequencies</h1>
 
-<div id="sign-in-status"></div>
-<a href="javascript:signToggle();"><div id="sign-in"></div></a>
-<!-- <div id="account-details"></div> -->
+<input type="button" id="home-button" onclick="javascript:window.location.replace('/')" value="Home"/>
+<input type="button" id="sign-in" onclick="javascript:signToggle();"/>
+<input type="button" id="manage-account" onclick="javascript:window.location.replace('/manage')" value="Manage"/>
+<input type="button" id="create-convo" onclick="javascript:window.location.replace('/create')" value="Create"/>
+<span style="float:right;" id="sign-in-status"></span>
+<hr>
+<p>
+
 
 <meta charset="UTF-8">
 

@@ -3,16 +3,6 @@
 <head>
     {% include "standard_head.html" %}
 
-    <style>
-        table {
-            border: 1px dashed red;
-        }
-        td  {
-            border: 1px dashed blue;
-            padding: 10px;
-        }
-    </style>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/js/manage_js.js" type="text/javascript"></script>
 
@@ -20,16 +10,16 @@
 </head>
 
 <body>
-
+<h3>Update User Information:</h3>
+(Note: Some fields are not editable)<p>
 Email: <input type="text" id="emailBox" readonly><br>
 First Name: <input type="text" id="fnameBox"><br>
 Last Name: <input type="text" id="lnameBox"><br>
 Date Joined: <input type="text" id="dateBox" readonly><br>
 Communication Preference: <input type="text" id="commPrefBox"><br>
-
 <p>
-<input type="button" onclick="javascript:window.location.replace('/create')" value="Create New Conversation"/>
-<p>
+<input type="button" id="submit-changes" onclick="" value="Submit"/>
+<p></p>
 
 <div id="conversationTable"/>
 </body>
