@@ -1,12 +1,17 @@
     function loadPageData() {
 
-    console.log("firebaseUser: " + userIdToken);
+        var url = window.location.href;
+        var convId = url.match(/(\d+)$/)[0];
+        console.log("convId: " + convId);
 
+
+        console.log("firebaseUser: " + userIdToken);
             if(userIdToken == null){
                 window.location.replace("/login");
             }
 
-            loadAllConversations(userIdToken);
+            loadThisConversation(userIdToken, convId);
+            loadConversationUsers(userIdToken, convId);
 
             document.getElementById('emailBox').value = localUser['email'];
             document.getElementById('fnameBox').value = localUser['fName'];
@@ -16,35 +21,35 @@
         }
 
 
-    function updateUser(userToken) {
-        $.ajax({url:'/api/users/', type:'PUT',
-            data: {'fname': document.getElementById('fnameBox').value,
-                   'lname': document.getElementById('lnameBox').value,
-                    'prefcomm': document.getElementById('commPrefBox').value},
-            headers: {'Authorization': 'Bearer ' + userIdToken}
-        }).then(function (result) {
-            window.alert("Data updated; refresh page");
-        })
-    }
+/*    name - readonly
+    createDate - readonly
+    destroyDate
+    revealOwner - T/F
+    viewAfterExpire - T/F
+    aliases... list 0...n.... "Mr. White" Mute[x]
+    idPolicy (colors_policy)*/
+
+        function loadThisConversation(userToken, convId) {
+            $.ajax('/api/conversations/' + convId, {
+                headers: {'Authorization': 'Bearer ' + userIdToken}
+
+                //Create and populate the Conversation Table
+            }).then(function (result) {
+                conversationArray = result['conversations'];
+
+            })
+        }
 
 
-    function loadAllConversations(userToken) {
-        $.ajax('/api/ownedconversations/', {
+//No Value to loading this.  Just returns the alias names.
+    function loadConversationUsers(userToken, convId) {
+        $.ajax('/api/conversations/' + convId + '/users/', {
             headers: {'Authorization': 'Bearer ' + userIdToken}
 
         //Create and populate the Conversation Table
         }).then(function (result) {
             conversationArray = result['conversations'];
 
-            for(var x = 0; x < conversationArray.length; x++){
-                $.ajax('/api/conversations/' + conversationArray[x]['id'], {
-                    headers: {'Authorization': 'Bearer ' + userIdToken}
-                }).then(function (result) {
-                    console.log("result:" + result);
-
-
-                })
-            }
 
             var tab, tr, td, tn, row;
             tableDiv = document.getElementById('conversationTable');
@@ -71,3 +76,6 @@
             tableDiv.appendChild(tab);
         })
     }
+
+
+

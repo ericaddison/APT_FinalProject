@@ -5,8 +5,6 @@ console.log("convId: " + convId);
 
 function loadPageData(){
 
-
-
     var convoDetails = document.getElementById('convoDetails');
     getConversationDetails(convId).then(function(result){
         convName = result[0];
@@ -18,9 +16,6 @@ function loadPageData(){
 
         convoDetails.innerHTML = displayText});
     window.ChatApp = new ChatApp();
-
-
-
 }
 
 function getConversationDetails(conversationId){

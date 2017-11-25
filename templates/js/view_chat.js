@@ -27,8 +27,8 @@ function ChatApp() {
   this.submitImageButton = document.getElementById('submitImage');
   this.imageForm = document.getElementById('image-form');
   this.mediaCapture = document.getElementById('mediaCapture');
-  this.userPic = document.getElementById('user-pic');
-  this.userName = document.getElementById('user-name');
+  //this.userPic = document.getElementById('user-pic');
+  //this.userName = document.getElementById('user-name');
   //this.signInButton = document.getElementById('sign-in');
   //this.signOutButton = document.getElementById('sign-out');
   this.signInSnackbar = document.getElementById('must-signin-snackbar');
@@ -83,7 +83,6 @@ ChatApp.prototype.saveMessage = function(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
-    // TODO(DEVELOPER): push new message to Firebase.
     var currentUser = this.auth.currentUser;
     this.messagesRef.push({
         name: currentUser.displayName,
@@ -103,7 +102,6 @@ ChatApp.prototype.saveMessage = function(e) {
 
 // Sets the URL of the given img element with the URL of the image stored in Cloud Storage.
 ChatApp.prototype.setImageUrl = function(imageUri, imgElement) {
-    // TODO(DEVELOPER): If image is on Cloud Storage, fetch image URL and set img element's src.
     if(imageUri.startsWith('gs://')){
         imgElement.src = ChatApp.LOADING_IMAGE_URL; //Display loading image first
         this.storage.refFromURL(imageUri).getMetadata().then(function(metadata){
@@ -134,7 +132,6 @@ ChatApp.prototype.saveImageMessage = function(event) {
     }
     // Check if the user is signed-in
     if (this.checkSignedInWithMessage()) {
-        // TODO(DEVELOPER): Upload image to Firebase storage and add message.
         if (this.checkSignedInWithMessage()) {
             var currentUser = this.auth.currentUser;
             this.messagesRef.push({
@@ -175,12 +172,12 @@ ChatApp.prototype.onAuthStateChanged = function(user) {
     var userName = user.displayName;     // TODO(DEVELOPER): Get user's name.
 
     // Set the user's profile pic and name.
-    this.userPic.style.backgroundImage = 'url(' + profilePicUrl + ')';
-    this.userName.textContent = userName;
+    //this.userPic.style.backgroundImage = 'url(' + profilePicUrl + ')';
+    //this.userName.textContent = userName;
 
     // Show user's profile and sign-out button.
-    this.userName.removeAttribute('hidden');
-    this.userPic.removeAttribute('hidden');
+    //this.userName.removeAttribute('hidden');
+    //this.userPic.removeAttribute('hidden');
     //this.signOutButton.removeAttribute('hidden');
 
     // Hide sign-in button.
@@ -193,8 +190,8 @@ ChatApp.prototype.onAuthStateChanged = function(user) {
     this.saveMessagingDeviceToken();
   } else { // User is signed out!
     // Hide user's profile and sign-out button.
-    this.userName.setAttribute('hidden', 'true');
-    this.userPic.setAttribute('hidden', 'true');
+    //this.userName.setAttribute('hidden', 'true');
+    //this.userPic.setAttribute('hidden', 'true');
     //this.signOutButton.setAttribute('hidden', 'true');
 
     // Show sign-in button.
@@ -217,8 +214,9 @@ ChatApp.prototype.checkSignedInWithMessage = function() {
 };
 
 // Saves the messaging device token to the datastore.
+//>>>>>>>>>>>>>>>> GETTING ERRORS HERE  <<<<<<<<<<<<<<<<<<<<<<<<
 ChatApp.prototype.saveMessagingDeviceToken = function() {
-  // TODO(DEVELOPER): Save the device token in the realtime datastore
+    //console.dir(firebase.messaging());
     firebase.messaging().getToken().then(function(currentToken){
         if(currentToken){
             console.log("Got FCM device token: ", currentToken);
@@ -226,6 +224,7 @@ ChatApp.prototype.saveMessagingDeviceToken = function() {
             firebase.database().ref('/fcmTokens').child(currentToken)
                 .set(firebase.auth().currentUser.uid);
         } else {
+            console.log("Need to request FCM device token");
             //Need to request permissions to show notifications
             this.requestNotificationsPermissions();
         }
@@ -236,7 +235,6 @@ ChatApp.prototype.saveMessagingDeviceToken = function() {
 
 // Requests permissions to show notifications.
 ChatApp.prototype.requestNotificationsPermissions = function() {
-  // TODO(DEVELOPER): Request permissions to send notifications.
     console.log('Requesting notifications permission...');
     firebase.messaging().requestPermission().then(function(){
         //Notification permission granted

@@ -1,5 +1,6 @@
 from source.framework.webapp2_helpers import make_routes
 from source.api.Conversations import ConversationsApi
+from source.api.Conversations import OwnedConversationsApi
 from source.api.ConvMessages import ConvMessagesApi
 from source.api.ConvUsers import ConvUsersApi
 from source.api.Users import UsersApi
@@ -11,5 +12,6 @@ app = make_routes([
     ('/api/conversations/(\d*)/messages/(\d*)', ConvMessagesApi),
     ('/api/conversations/(\d*)/users/(\d*)', ConvUsersApi),
     ('/api/conversations/(\d*)', ConversationsApi),
+    ('/api/ownedconversations/', OwnedConversationsApi),
     ('/api/users/', UsersApi)
 ])
