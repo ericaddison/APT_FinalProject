@@ -119,4 +119,28 @@ class ConversationsApi(ApiServiceHandler):
         """Delete conversation API"""
         return delete_conversation(user, args[0])
 
-# [END API handler]
+
+
+
+
+
+class OwnedConversationsApi(ApiServiceHandler):
+        """REST API handler to allow interaction with conversation data"""
+
+        def get_hook(self, user, *args):
+            """Get conversation data API"""
+            return get_my_conversations(user)
+
+
+def get_my_conversations(user):
+    """Get conversations by name, or get all conversations if no names provided"""
+    logging.debug("***get_my_conversations")
+    response = {'status': 200}
+    results = Conversations.get_conversation_by_owner(user)
+    convList = []
+    for conv in results:
+        convList.append({'id': conv.key.id(), 'name': conv.name})
+
+    response['conversations'] = convList
+
+    return response

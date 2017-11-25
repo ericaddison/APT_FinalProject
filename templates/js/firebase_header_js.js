@@ -37,7 +37,6 @@ firebase.initializeApp(config);
 
                   user.getIdToken().then(function(accessToken) {
                       userIdToken = accessToken;
-                      sign_in_status_header.textContent = 'Signed in as ' + displayName + " <" + email + ">";
                       manage_account_button.value = 'Manage';
                       sign_in_button.value = 'Logout';
                       create_convo_button.style.visibility = "visible";
@@ -72,6 +71,7 @@ firebase.initializeApp(config);
               if(result) {
                   localUser = result['user'];
                   localUserId = localUser['id'];
+                  document.getElementById('sign-in-status').textContent = 'Signed in as ' + localUser.fName + " " + localUser.lName + " <" + localUser.email + ">";
                   userDataLoaded().then(loadPageData());
               }
           })

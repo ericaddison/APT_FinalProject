@@ -27,7 +27,7 @@ var tableDiv  = document.getElementById('conversationTable');
             tab = document.createElement('table');
             tr = document.createElement('tr');
             td = document.createElement('td');
-            tn = document.createTextNode('Conversations:');
+            tn = document.createTextNode('Join Active Conversation:');
             td.appendChild(tn);
             tr.appendChild(td);
             tab.appendChild(tr);

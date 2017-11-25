@@ -46,6 +46,7 @@ class UsersApi(ApiServiceHandler):
 
     def put_hook(self, user, *args):
         """Update user settings for a user"""
+        print "put_hook:  ", args;
         fname = self.get_request_param(c.fname_parm)
         lname = self.get_request_param(c.lname_parm)
         prefcomm = self.get_request_param(c.prefcomm_parm)
