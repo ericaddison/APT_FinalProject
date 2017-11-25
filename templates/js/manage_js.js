@@ -8,24 +8,7 @@
 
             loadAllConversations(userIdToken);
 
-            document.getElementById('emailBox').value = localUser['email'];
-            document.getElementById('fnameBox').value = localUser['fName'];
-            document.getElementById('lnameBox').value = localUser['lName'];
-            document.getElementById('dateBox').value = (localUser['joinDate']).substring(0,19);
-            document.getElementById('commPrefBox').value = localUser['prefComm'];
-        }
-
-
-    function updateUser(userToken) {
-        $.ajax({url:'/api/users/', type:'PUT',
-            data: {'fname': document.getElementById('fnameBox').value,
-                   'lname': document.getElementById('lnameBox').value,
-                    'prefcomm': document.getElementById('commPrefBox').value},
-            headers: {'Authorization': 'Bearer ' + userIdToken}
-        }).then(function (result) {
-            window.alert("Data updated; refresh page");
-        })
-    }
+          }
 
 
     function loadAllConversations(userToken) {
@@ -40,8 +23,7 @@
                 $.ajax('/api/conversations/' + conversationArray[x]['id'], {
                     headers: {'Authorization': 'Bearer ' + userIdToken}
                 }).then(function (result) {
-                    console.log("result:" + result);
-
+//Maybe get/display some more data on each conversation?
 
                 })
             }
@@ -52,7 +34,7 @@
             tab = document.createElement('table');
             tr = document.createElement('tr');
             td = document.createElement('td');
-            tn = document.createTextNode('Manage My Conversations:');
+            tn = document.createTextNode('');
             td.appendChild(tn);
             tr.appendChild(td);
             tab.appendChild(tr);

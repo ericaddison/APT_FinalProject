@@ -12,18 +12,21 @@
 <body>
 <b>Update Conversation Information:</b><br>
 (Note: Some fields are not editable)<p>
-Email: <input type="text" id="emailBox" readonly><br>
-Date Joined: <input type="text" id="dateBox" readonly><br>
-First Name: <input type="text" id="fnameBox"><br>
-Last Name: <input type="text" id="lnameBox"><br>
-Communication Preference: <select id="commPrefBox">
-                            <option value="email">Email</option>
-                            <option value="sms">SMS</option>
-                        </select> <br>
+Name: <input type="text" id="nameBox"><br>
+Create Date: <input type="date" id="createDateBox" readonly><br>
+Destroy Date: <input type="date" id="destroyDateBox"><br>
+Reveal Owner: <input type="checkbox" id="revealOwnerBox"><br>
+View After Expiration: <input type="checkbox" id="viewAfterExpireBox"><br>
+ID Policy: <select id="idPolicyBox">
+    <option value="first">FirstOption</option>
+    <option value="second">SecondOption</option>
+    <option value="third">ThirdOption</option>
+</select><br>
+
+
 <p>
-<input type="button" id="submit-changes" onclick="updateUser(userIdToken)" value="Update User"/>
+<input type="button" id="submit-changes" onclick="updateConversation(userIdToken, convId)" value="Update Conversation"/>
 <p></p>
 
-<div id="conversationTable"/>
 </body>
 </html>

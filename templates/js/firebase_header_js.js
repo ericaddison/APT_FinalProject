@@ -19,6 +19,7 @@ firebase.initializeApp(config);
 
   function initApp (){
       var sign_in_status_header = document.getElementById('sign-in-status');
+      var user_profile_button = document.getElementById('profile-button');
       var manage_account_button = document.getElementById('manage-account');
       var create_convo_button = document.getElementById('create-convo');
       var sign_in_button = document.getElementById('sign-in');
@@ -39,6 +40,7 @@ firebase.initializeApp(config);
                       userIdToken = accessToken;
                       manage_account_button.value = 'Manage';
                       sign_in_button.value = 'Logout';
+                      user_profile_button.style.visibility = "visible";
                       create_convo_button.style.visibility = "visible";
                       manage_account_button.style.visibility = "visible";
                       sign_in_status_header.style.visibility = "visible";
@@ -48,6 +50,7 @@ firebase.initializeApp(config);
                   // User is signed out.
                   firebaseUser = null;
                   sign_in_status_header.style.visibility = "hidden";
+                  user_profile_button.style.visibility = "hidden";
                   manage_account_button.style.visibility = "hidden";
                   create_convo_button.style.visibility = "hidden";
                   sign_in_button.value = 'Login';
@@ -66,14 +69,17 @@ firebase.initializeApp(config);
 
   window.addEventListener('load', function() {
       initApp().then(function (){
-          $.ajax({url:'/api/users/', type: "GET", headers: {'Authorization': 'Bearer ' + userIdToken}
-          }).then(function (result) {
-              if(result) {
-                  localUser = result['user'];
-                  localUserId = localUser['id'];
-                  document.getElementById('sign-in-status').textContent = 'Signed in as ' + localUser.fName + " " + localUser.lName + " <" + localUser.email + ">";
-                  userDataLoaded().then(loadPageData());
-              }
-          })
+          if(firebaseUser) {
+              $.ajax({
+                  url: '/api/users/', type: "GET", headers: {'Authorization': 'Bearer ' + userIdToken}
+              }).then(function (result) {
+                  if (result) {
+                      localUser = result['user'];
+                      localUserId = localUser['id'];
+                      document.getElementById('sign-in-status').textContent = 'Signed in as: ' + localUser.fName + " " + localUser.lName;
+                      userDataLoaded().then(loadPageData());
+                  }
+              })
+          }
       })
   });

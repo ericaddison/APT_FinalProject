@@ -1,11 +1,11 @@
 
     function loadPageData() {
         document.getElementById('owner').value = localUser['id'];
-        document.getElementById('results').style.visibility = "hidden";
 
     }
 
     function createConversation(){
+        var owner = document.getElementById('owner').value;
         var owner = document.getElementById('owner').value;
         var convName = document.getElementById('convNameBox').value;
         var destDate = document.getElementById('destroyDateBox').value;
@@ -34,13 +34,13 @@
             }).then(function(result){
                 //do stuff with the result
                 if(result['status'] == '200'){
-                    document.getElementById('resultBox').value = "Success";
+                    document.getElementById('resultBox').value = "Conversation Created";
+                    window.location.replace('/manage/' + result['conversations']['id']);
                 }
                 else{
-                    document.getElementById('resultBox').value = "Failure";
-
+                    document.getElementById('resultBox').value = "Create Failed";
                 }
-                document.getElementById('results').style.visibility = "visible";
+
 
             })
 

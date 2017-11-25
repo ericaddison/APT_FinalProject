@@ -15,11 +15,14 @@
 <h1>Hailing Frequencies</h1>
 
 <input type="button" id="home-button" onclick="javascript:window.location.replace('/')" value="Home"/>
-<input type="button" id="sign-in" onclick="javascript:signToggle();"/>
+<input type="button" id="sign-in" onclick="javascript:signToggle();" value="Login"/>
 <input type="button" id="profile-button" onclick="javascript:window.location.replace('/profile')" value="Profile"/>
 <input type="button" id="manage-account" onclick="javascript:window.location.replace('/manage')" value="Manage"/>
 <input type="button" id="create-convo" onclick="javascript:window.location.replace('/create')" value="Create"/>
 <span style="float:right;" id="sign-in-status"></span>
+<br>
+<span style="float:right;" id="system-message">System Message: <input type="text" id="resultBox" readonly></span>
+<br>
 <hr>
 <p>
 
