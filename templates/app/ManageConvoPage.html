@@ -18,14 +18,16 @@ Destroy Date: <input type="date" id="destroyDateBox"><br>
 Reveal Owner: <input type="checkbox" id="revealOwnerBox"><br>
 View After Expiration: <input type="checkbox" id="viewAfterExpireBox"><br>
 ID Policy: <select id="idPolicyBox">
-    <option value="first">FirstOption</option>
-    <option value="second">SecondOption</option>
-    <option value="third">ThirdOption</option>
+    <option value="real_names">Real Names</option>
+    <option value="user_alias">User Alias</option>
+    <option value="colors">Colors</option>
+    <option value="numbers">Numbers</option>
+    <option value="animals">Animals</option>
 </select><br>
 
 
 <p>
-<input type="button" id="submit-changes" onclick="updateConversation(userIdToken, convId)" value="Update Conversation"/>
+<input type="button" id="submit-changes" onclick="updateConversation(userIdToken)" value="Update Conversation"/>
 <p></p>
 
 </body>

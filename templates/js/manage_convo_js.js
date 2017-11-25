@@ -32,11 +32,13 @@
                 conversationArray = result['conversations'];
 
             document.getElementById('nameBox').value = conversationArray['name'];
-            document.getElementById('createDateBox').value = Date.parse(conversationArray['createDate'].substring(0,19));
-            document.getElementById('destroyDateBox').value = Date.parse(conversationArray['destroyDate']);
-            document.getElementById('revealOwnerBox').value = conversationArray['revealOwner'];
-            document.getElementById('viewAfterExpireBox').value = conversationArray['viewAfterExpire'];
+            document.getElementById('createDateBox').value = conversationArray['createDate'].substring(0,10);
+            document.getElementById('destroyDateBox').value = conversationArray['destroyDate'].substring(0,10);
+            document.getElementById('revealOwnerBox').checked = (conversationArray['revealOwner'] === true);
+            document.getElementById('viewAfterExpireBox').checked = (conversationArray['viewAfterExpire'] === true);
             document.getElementById('idPolicyBox').value = conversationArray['idPolicy'];
+
+            console.log("checked: " + conversationArray['revealOwner']);
 
 
 /*            var tab, tr, td, tn, row;
@@ -66,14 +68,21 @@
     }
 
 
+        function updateConversation(userToken) {
+            var url = window.location.href;
+            var convId = url.match(/(\d+)$/)[0];
 
-        function updateConversation(userToken, convId) {
-            $.ajax('/api/conversations/' + convId, {
-                headers: {'Authorization': 'Bearer ' + userIdToken}
+            $.ajax({url:'/api/conversations/' + convId, type:'PUT',
+            data: { 'conv_name': document.getElementById('nameBox').value,
+                    'destroy_date': document.getElementById('destroyDateBox').value,
+                    'idpolicy_date':document.getElementById('idPolicyBox').value,
+                    'view_after_expire':document.getElementById('viewAfterExpireBox').checked,
+                    'reveal_owner':document.getElementById('revealOwnerBox').checked },
+            headers: {'Authorization': 'Bearer ' + userIdToken}
 
                 //Create and populate the Conversation Table
             }).then(function (result) {
-                conversationArray = result['conversations'];
+                document.getElementById('resultBox').value = result['conversations'];
 
             })
         }

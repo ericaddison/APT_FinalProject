@@ -66,10 +66,26 @@ def create_conversation(user, name, destroy_date, id_policy, view_after_expire, 
                 'status': 403}
 
 
-def update_conversation(user, conv_id):
+def update_conversation(user, conv_id, name, destroy_date,
+                        id_policy, view_after_expire, reveal_owner,
+                        restrict_comms, password):
     """Update conversation settings"""
     response = {}
-    response['conversations'] = "Updated conversation"
+    thisConvo =  Conversations.get_conversation_by_id(conv_id)
+    print "user: ", user
+    print "owner: ", thisConvo.owner.get()
+    if user is thisConvo.owner.get():
+        thisConvo.name = name
+        thisConvo.destroyDate = datetime.strptime(destroy_date, '%Y-%m-%d')
+        thisConvo.idPolicy = id_policy
+        thisConvo.viewAfterExpire = (view_after_expire == 'true')
+        thisConvo.revealOwner = (reveal_owner == 'true')
+        thisConvo.restrictComms = restrict_comms
+        thisConvo.password = password
+        thisConvo.put()
+        response['conversations'] = "Updated conversation"
+    else:
+        response['conversations'] = "You are not the owner"
     return response
 
 
@@ -113,7 +129,17 @@ class ConversationsApi(ApiServiceHandler):
 
     def put_hook(self, user, *args):
         """Update conversation API"""
-        return update_conversation(user, args[0])
+        name = self.get_request_param(c.conversastion_name_parm)
+        destroy_date = self.get_request_param(c.destroydate_parm)
+        id_policy = self.get_request_param(c.idpolicy_parm)
+        view_after_expire = self.get_request_param(c.view_after_expire_parm)
+        reveal_owner = self.get_request_param(c.reveal_owner_parm)
+        restrict_comms = self.get_request_param(c.restrict_comms_parm)
+        password = self.get_request_param(c.password_parm)
+        print"***update name: ", name
+        return update_conversation(user, args[0], name, destroy_date,
+                                   id_policy, view_after_expire, reveal_owner,
+                                   restrict_comms, password)
 
     def delete_hook(self, user, *args):
         """Delete conversation API"""
