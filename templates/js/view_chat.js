@@ -58,6 +58,8 @@ ChatApp.prototype.initFirebase = function() {
     this.auth = firebase.auth();
     this.database = firebase.database();
     this.storage = firebase.storage();
+    this.messaging = firebase.messaging();
+
     this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 
 };
@@ -214,24 +216,27 @@ ChatApp.prototype.checkSignedInWithMessage = function() {
 };
 
 // Saves the messaging device token to the datastore.
-//>>>>>>>>>>>>>>>> GETTING ERRORS HERE  <<<<<<<<<<<<<<<<<<<<<<<<
 ChatApp.prototype.saveMessagingDeviceToken = function() {
-    //console.dir(firebase.messaging());
-    firebase.messaging().getToken().then(function(currentToken){
-        if(currentToken){
-            console.log("Got FCM device token: ", currentToken);
-            //Saving the Device Token to the datastore
-            firebase.database().ref('/fcmTokens').child(currentToken)
-                .set(firebase.auth().currentUser.uid);
-        } else {
-            console.log("Need to request FCM device token");
-            //Need to request permissions to show notifications
-            this.requestNotificationsPermissions();
-        }
-    }.bind(this)).catch(function(error){
-        console.error('Unable to get messaging token.', error);
-    });
+    navigator.serviceWorker.register('/js/firebase-messaging-sw.js')
+        .then(function (registration) {
+            firebase.messaging().useServiceWorker(registration);
+            firebase.messaging().getToken().then(function (currentToken) {
+                if (currentToken) {
+                    console.log("Got FCM device token: ", currentToken);
+                    //Saving the Device Token to the datastore
+                    firebase.database().ref('/fcmTokens').child(currentToken)
+                        .set(firebase.auth().currentUser.uid);
+                } else {
+                    console.log("Need to request FCM device token");
+                    //Need to request permissions to show notifications
+                    this.requestNotificationsPermissions();
+                }
+            }.bind(this)).catch(function (error) {
+                console.error('Unable to get messaging token.', error);
+            });
+        });
 };
+
 
 // Requests permissions to show notifications.
 ChatApp.prototype.requestNotificationsPermissions = function() {
@@ -245,18 +250,15 @@ ChatApp.prototype.requestNotificationsPermissions = function() {
 };
 
 // Resets the given MaterialTextField.
-ChatApp.resetMaterialTextfield = function(element) {
+ChatApp.prototype.resetMaterialTextfield = function(element) {
   element.value = '';
   element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
 };
 
 // Template for messages.
-ChatApp.MESSAGE_TEMPLATE =
-    '<div class="message-container">' +
+var MESSAGE_TEMPLATE = '<div class="message-container">' +
       '<div class="spacing"><div class="pic"></div></div>' +
-      '<div class="message"></div>' +
-      '<div class="name"></div>' +
-    '</div>';
+      '<div class="message"></div>' +'<div class="name"></div>' + '</div>';
 
 // A loading image URL.
 ChatApp.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
@@ -267,7 +269,7 @@ ChatApp.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
   // If an element for that message does not exists yet we create it.
   if (!div) {
     var container = document.createElement('div');
-    container.innerHTML = ChatApp.MESSAGE_TEMPLATE;
+    container.innerHTML = MESSAGE_TEMPLATE;
     div = container.firstChild;
     div.setAttribute('id', key);
     this.messageList.appendChild(div);

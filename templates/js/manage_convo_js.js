@@ -2,32 +2,21 @@
 
         var url = window.location.href;
         var convId = url.match(/(\d+)$/)[0];
-        console.log("convId: " + convId);
 
 
-        console.log("firebaseUser: " + userIdToken);
-            if(userIdToken == null){
-                window.location.replace("/login");
-            }
-
-            loadThisConversation(userIdToken, convId);
-
+        if(!userIdToken){
+            window.location.replace("/login");
         }
 
+        loadThisConversation(userIdToken, convId);
 
-/*    name - readonly
-    createDate - readonly
-    destroyDate
-    revealOwner - T/F
-    viewAfterExpire - T/F
-    aliases... list 0...n.... "Mr. White" Mute[x]
-    idPolicy (colors_policy)*/
+    }
+
 
         function loadThisConversation(userToken, convId) {
             $.ajax('/api/conversations/' + convId, {
                 headers: {'Authorization': 'Bearer ' + userIdToken}
 
-                //Create and populate the Conversation Table
             }).then(function (result) {
                 conversationArray = result['conversations'];
 
@@ -38,16 +27,16 @@
             document.getElementById('viewAfterExpireBox').checked = (conversationArray['viewAfterExpire'] === true);
             document.getElementById('idPolicyBox').value = conversationArray['idPolicy'];
 
-            console.log("checked: " + conversationArray['revealOwner']);
+//Populate User List to allow muting:
+            //result['conversations']['aliases']
 
-
-/*            var tab, tr, td, tn, row;
-            tableDiv = document.getElementById('conversationTable');
+            /*var tab, tr, td, tn, row;
+            tableDiv = document.getElementById('mute-user-list');
 
             tab = document.createElement('table');
             tr = document.createElement('tr');
             td = document.createElement('td');
-            tn = document.createTextNode('Manage My Conversations:');
+            tn = document.createTextNode('Mute Users:');
             td.appendChild(tn);
             tr.appendChild(td);
             tab.appendChild(tr);

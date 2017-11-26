@@ -25,12 +25,12 @@ function getConversationDetails(conversationId){
             .then(function (result) {
                 id = result['conversations']['id'];
                 name = result['conversations']['name'];
-                createDate = result['conversations']['createDate'];
+                //createDate = result['conversations']['createDate'];
                 destroyDate = result['conversations']['destroyDate'];
-                numUsers = result['conversations']['aliases'].length;
-                tableRecord = [name, createDate, destroyDate, numUsers];
-                console.log("tableRecord: " + tableRecord);
-                resolve(tableRecord);
+                //numUsers = result['conversations']['aliases'].length;
+                //tableRecord = [name, createDate, destroyDate, numUsers];
+                //console.log("tableRecord: " + tableRecord);
+                //resolve(tableRecord);
                 })
         })
 }
