@@ -86,18 +86,30 @@ ChatApp.prototype.saveMessage = function(e) {
   // Check that the user entered a message and is signed in.
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
     var currentUser = this.auth.currentUser;
-    this.messagesRef.push({
-        name: currentUser.displayName,
-        text: this.messageInput.value,
-        photoUrl: currentUser.photoURL || 'images/profile_placeholder.png'
-    }).then(function(){
-        //Clear message text field and SEND button state.
-        ChatApp.resetMaterialTextfield(this.messageInput);
-        this.toggleButton();
+    //POST to '/api/conversations/(\d*)/messages/'
+      var postUrl = '/api/conversations/' + convId + '/messages/';
+      var messageInput = this.messageInput;
+      var messageRef = this.messagesRef;
+      var toggleButton = this.toggleButton();
+      $.ajax({url: postUrl, type: "POST",
+             headers: {'Authorization': 'Bearer ' + userIdToken},
+             data: {"text": this.messageInput.value, "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'}
 
-    }.bind(this)).catch(function(error){
-        console.error('Error writing new message to Firebase Database', error);
-    });
+            }).then(function(result) {
+                messageRef.push({
+                    //name: currentUser.displayName,
+                    name: result['messages']['userAlias'],
+                    text: messageInput.value,
+                    photoUrl: currentUser.photoURL || 'images/profile_placeholder.png'
+                }).then(function () {
+                    //Clear message text field and SEND button state.
+                    ChatApp.resetMaterialTextfield(messageInput);
+                    toggleButton;
+
+          }.bind(this)).catch(function (error) {
+              console.error('Error writing new message to Firebase Database', error);
+          });
+      });
 
   }
 };

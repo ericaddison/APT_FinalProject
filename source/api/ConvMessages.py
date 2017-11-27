@@ -3,6 +3,7 @@ from source.models.ConvMessages import ConvMessages
 import source.framework.constants as c
 from source.framework.communicate import broadcast_message
 from source.api.api_helpers import process_apicall_checkconv_checkuser, process_apicall_checkconv
+import requests
 
 # [BEGIN API python methods]
 
@@ -38,6 +39,13 @@ def create_message(user, conv_id, text, media_url):
         # send new msg to all users in this conv
         broadcast_message(msg)
         response['messages'] = msg.get_full_data()
+
+        #Send the message to Firebase
+        
+        #postUrl = 'https://hailing-frequencies-2017.firebaseio.com/messages/' + conv_id + '/'
+        #payload =
+        #reply = requests.post(postUrl, data=payload)
+
         return response
 
     return process_apicall_checkconv_checkuser(user, conv_id, create_message)
