@@ -80,9 +80,9 @@ class ConversationMailHandler(InboundMailHandler):
         # put message in conversation
         message = []
 
-        html_bodies = email.bodies('text/html')
+        plaintext_bodies = email.bodies('text/plain')
 
-        for content_type, body in html_bodies:
+        for content_type, body in plaintext_bodies:
             logging.info('content_type: ' + content_type)
             decoded_body = body.decode()
             logging.info('decoded_body: ' + decoded_body)

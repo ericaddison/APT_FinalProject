@@ -36,7 +36,8 @@ def broadcast_message(convmsg, token):
 
 def send_to_web(convmsg, token):
     logging.debug('sending web message to Firebase')
-    fb.post_message_to_firebase(convmsg, token)
+    rsp = fb.post_message_to_firebase(convmsg, token)
+    logging.debug(rsp.content)
 
 
 def send_to_email(convmsg, comm_detail):
