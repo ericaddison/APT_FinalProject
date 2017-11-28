@@ -1,8 +1,7 @@
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from source.api.ConvMessages import create_message
 from source.models.Users import Users
-from source.models.ConvMessages import ConvMessages
-import source.framework.communicate as comm
+from source.config.authentication import FIREBASE_SECRET
 import logging
 import re
 
@@ -78,7 +77,6 @@ class ConversationMailHandler(InboundMailHandler):
 
         logging.debug('found user: {}'.format(user.get_id()))
 
-
         # put message in conversation
         message = []
 
@@ -90,9 +88,8 @@ class ConversationMailHandler(InboundMailHandler):
             logging.info('decoded_body: ' + decoded_body)
             message.append(decoded_body)
 
-
         # create message, which includes message broadcast to conversation
-        response = create_message(user, convID, " ".join(message), "")
+        response = create_message(user, convID, " ".join(message), "", FIREBASE_SECRET)
         logging.debug("Create message response: {}".format(response))
 
     @classmethod
