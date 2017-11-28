@@ -106,13 +106,7 @@ ChatApp.prototype.saveMessage = function(e) {
              headers: {'Authorization': 'Bearer ' + userIdToken},
              data: {"text": this.messageInput.value, "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'}
 
-            }).then(function(result) {
-                messageRef.push({
-                    //name: currentUser.displayName,
-                    name: result['messages']['userAlias'],
-                    text: messageInput.value,
-                    photoUrl: currentUser.photoURL || 'images/profile_placeholder.png'
-                }).then(function () {
+            }).then(function () {
                     //Clear message text field and SEND button state.
                     ChatApp.resetMaterialTextfield(messageInput);
                     toggleButton;
