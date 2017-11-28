@@ -84,7 +84,7 @@ class ConversationMailHandler(InboundMailHandler):
 
         for content_type, body in plaintext_bodies:
             logging.info('content_type: ' + content_type)
-            decoded_body = body.decode()
+            decoded_body = str(body.decode())
             logging.info('decoded_body: ' + decoded_body)
             message.append(decoded_body)
 
