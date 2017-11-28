@@ -19,6 +19,17 @@
 function ChatApp() {
   this.checkSetup();
 
+  // before anything, make sure user has joined the conversation...
+  //TODO: also prompt for password here if necessary
+
+    $.ajax({url: '/api/conversations/'+convId+'/users/',
+            type: "POST",
+            headers: {'Authorization': 'Bearer ' + userIdToken}
+            }).then(function(result){
+                console.log(result)
+            });
+
+
   // Shortcuts to DOM Elements.
   this.messageList = document.getElementById('messages');
   this.messageForm = document.getElementById('message-form');
