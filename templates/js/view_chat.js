@@ -96,11 +96,13 @@ ChatApp.prototype.saveMessage = function(e) {
              data: {"text": this.messageInput.value, "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'}
 
             }).then(function(result) {
+                var userAlias = result['messages']['userAlias'];
                 messageRef.push({
                     //name: currentUser.displayName,
                     name: result['messages']['userAlias'],
                     text: messageInput.value,
-                    photoUrl: currentUser.photoURL || 'images/profile_placeholder.png'
+                    photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
+                    timestamp: new Date().getTime()  //UTC timestamp
                 }).then(function () {
                     //Clear message text field and SEND button state.
                     ChatApp.resetMaterialTextfield(messageInput);
@@ -148,21 +150,34 @@ ChatApp.prototype.saveImageMessage = function(event) {
     if (this.checkSignedInWithMessage()) {
         if (this.checkSignedInWithMessage()) {
             var currentUser = this.auth.currentUser;
-            this.messagesRef.push({
-                name: currentUser.displayName,
-                imageUrl: ChatApp.LOADING_IMAGE_URL,
-                photoUrl: currentUser.photoURL || '/image/profile_placeholder.png'
+            var postUrl = '/api/conversations/' + convId + '/messages/';
+            $.ajax({
+                url: postUrl, type: "POST",
+                headers: {'Authorization': 'Bearer ' + userIdToken},
+                data: {
+                    "text": this.messageInput.value,
+                    "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'
+                }
+
+            }).then(function (result) {
+                var userAlias = result['messages']['userAlias'];
+                this.messagesRef.push({
+                    name: userAlias,
+                    imageUrl: ChatApp.LOADING_IMAGE_URL,
+                    photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
+                    timestamp: new Date().getTime()
             }).then(function (data) {
-                //Upload the image to Cloud Storage
-                var filePath = currentUser.uid + '/' + data.key + '/' + file.name;
-                return this.storage.ref(filePath).put(file).then(function (snapshot) {
-                    //Get the file's Storage URI and update the chat message placeholder
-                    var fullPath = snapshot.metadata.fullPath;
-                    return data.update({imageUrl: this.storage.ref(fullPath).toString()});
-                }.bind(this));
-            }.bind(this)).catch(function (error) {
-                console.error('There was an error uploading a file to Cloud Storage: ', error);
-            });
+                    //Upload the image to Cloud Storage
+                    var filePath = currentUser.uid + '/' + data.key + '/' + file.name;
+                    return this.storage.ref(filePath).put(file).then(function (snapshot) {
+                        //Get the file's Storage URI and update the chat message placeholder
+                        var fullPath = snapshot.metadata.fullPath;
+                        return data.update({imageUrl: this.storage.ref(fullPath).toString()});
+                    }.bind(this));
+                }.bind(this)).catch(function (error) {
+                    console.error('There was an error uploading a file to Cloud Storage: ', error);
+                });
+            })
         }
     }
 };
@@ -269,8 +284,14 @@ ChatApp.prototype.resetMaterialTextfield = function(element) {
 
 // Template for messages.
 var MESSAGE_TEMPLATE = '<div class="message-container">' +
-      '<div class="spacing"><div class="pic"></div></div>' +
-      '<div class="message"></div>' +'<div class="name"></div>' + '</div>';
+      '<div class="spacing" style="display: table-cell; vertical-align: top;">' +
+    '<div class="pic" style="background-image: url(\'/images/profile_placeholder.png\');  background-repeat: no-repeat; width: 30px; height: 30px; background-size: 30px;  border-radius: 20px;"></div></div>' +
+      '<div class="message" style="display: table-cell;  width: calc(100% - 40px);  padding: 5px 0 5px 10px;"></div>' +
+    '<div class="name" style="display: inline-block;width: 100%;padding-left: 40px;color: #bbb;font-style: italic;font-size: 10px;box-sizing: border-box;"></div>' +
+    '</div>';
+
+
+
 
 // A loading image URL.
 ChatApp.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
@@ -289,7 +310,7 @@ ChatApp.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
   if (picUrl) {
     div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
   }
-  div.querySelector('.name').textContent = name;
+    div.querySelector('.name').textContent = name;
   var messageElement = div.querySelector('.message');
   if (text) { // If the message is text.
     messageElement.textContent = text;
