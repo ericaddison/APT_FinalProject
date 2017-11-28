@@ -28,7 +28,7 @@ def get_messages(user, conv_id, msg_id):
     return process_apicall_checkconv_checkuser(user, conv_id, get_messages)
 
 
-def create_message(user, conv_id, text, media_url):
+def create_message(user, conv_id, text, media_url, token):
     """Create a new message"""
 
     # method to call if user is part of the conversation
@@ -37,7 +37,7 @@ def create_message(user, conv_id, text, media_url):
         msg = ConvMessages.create(user, user_alias, conv, text, media_url)
         conv.put_message(msg)
         # send new msg to all users in this conv
-        broadcast_message(msg)
+        broadcast_message(msg, token)
         response['messages'] = msg.get_full_data()
 
         #Send the message to Firebase
@@ -51,7 +51,7 @@ def create_message(user, conv_id, text, media_url):
     return process_apicall_checkconv_checkuser(user, conv_id, create_message)
 
 
-def update_message(user, conv_id, message_id, text, media_url):
+def update_message(user, conv_id, message_id, text, media_url, access_token):
     """Update (edit) a message"""
 
     # method to call if user is part of the conversation
@@ -65,7 +65,7 @@ def update_message(user, conv_id, message_id, text, media_url):
             return NOT_AUTH_RESPONSE
         msg.update(text, media_url)
         # send new msg to all users in this conv
-        broadcast_message(msg)
+        broadcast_message(msg, access_token)
         response['messages'] = msg.get_full_data()
         return response
 
@@ -99,27 +99,27 @@ def delete_message(user, conv_id, message_id):
 class ConvMessagesApi(ApiServiceHandler):
     """REST API handler to allow interaction with messages"""
 
-    def get_hook(self, user, *args):
+    def get_hook(self, user, *args, **kwargs):
         """Get message API"""
         return get_messages(user, args[0], args[1])
 
-    def post_hook(self, user, *args):
+    def post_hook(self, user, *args, **kwargs):
         """Create message API"""
         if args[1]:
             return NOT_FOUND_RESPONSE
         text = self.get_request_param(c.text_param)
         media_url = self.get_request_param(c.media_url_param)
-        return create_message(user, args[0], text, media_url)
+        return create_message(user, args[0], text, media_url, kwargs['access_token'])
 
-    def put_hook(self, user, *args):
+    def put_hook(self, user, *args, **kwargs):
         """Update message API"""
         if not args[1]:
             return NOT_FOUND_RESPONSE
         text = self.get_request_param(c.text_param)
         media_url = self.get_request_param(c.media_url_param)
-        return update_message(user, args[0], args[1], text, media_url)
+        return update_message(user, args[0], args[1], text, media_url, kwargs['access_token'])
 
-    def delete_hook(self, user, *args):
+    def delete_hook(self, user, *args, **kwargs):
         """Delete message API"""
         if not args[1]:
             return NOT_FOUND_RESPONSE

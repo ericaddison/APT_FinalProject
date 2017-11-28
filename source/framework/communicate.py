@@ -1,5 +1,6 @@
 import logging
 import source.framework.SendGrid as sg
+import source.framework.firebase as fb
 try:
     import source.config.authentication as conf
 except ImportError:
@@ -9,7 +10,7 @@ except ImportError:
 # currently sends to ALL, including self
 
 
-def broadcast_message(convmsg):
+def broadcast_message(convmsg, token):
     """Send new message to all users of a conversation"""
     logging.debug("Sending message \"{}\" from {} to all".format(convmsg.get_text(), convmsg.alias))
 
@@ -20,10 +21,12 @@ def broadcast_message(convmsg):
 
     convusers = conv.get_active_convusers()
 
+    # always send to web
+    send_to_web(convmsg, token)
+
+    # also send to other options
     for convuser in convusers:
-        if convuser.commOption == 'web':
-            send_to_web(convmsg, convuser.commDetail)
-        elif convuser.commOption == 'email':
+        if convuser.commOption == 'email':
             send_to_email(convmsg, convuser.commDetail)
         elif convuser.commOption == 'sms':
             send_to_sms(convmsg, convuser.commDetail)
@@ -31,8 +34,9 @@ def broadcast_message(convmsg):
             logging.warning("Unknown comm option: {}".format(convuser.commOption))
 
 
-def send_to_web(convmsg, comm_detail):
-    logging.debug('sending web message to {}'.format(comm_detail))
+def send_to_web(convmsg, token):
+    logging.debug('sending web message to Firebase')
+    fb.post_message_to_firebase(convmsg, token)
 
 
 def send_to_email(convmsg, comm_detail):

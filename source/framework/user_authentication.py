@@ -20,9 +20,7 @@ except ImportError:
     import source.config.authentication_dummy as conf
 
 
-def user_authentication(auth_header):
-    user = None
-
+def get_token(auth_header):
     parts = auth_header.split()
     if len(parts) != 2:
         logging.warning("user_authentication(): improper authorization header length")
@@ -33,7 +31,11 @@ def user_authentication(auth_header):
         return None
 
     access_token = parts[1]
+    return access_token
 
+
+def user_authentication(access_token):
+    user = None
     if verify_token(access_token):
         user = get_user_from_token(access_token)
     return user
