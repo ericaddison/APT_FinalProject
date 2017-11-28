@@ -3,6 +3,7 @@ from source.framework.ApiServiceHandler import ApiServiceHandler, NOT_FOUND_RESP
 from source.config.defaults import DEFAULT_CONVERSATION_LIFETIME_SECONDS
 import source.framework.constants as c
 from source.models.Conversations import Conversations, id_policies
+from source.models.ConvUsers import ConvUsers
 from datetime import datetime
 from dateutil import parser
 import time
@@ -166,6 +167,33 @@ def get_my_conversations(user):
     convList = []
     for conv in results:
         convList.append({'id': conv.key.id(), 'name': conv.name})
+
+    response['conversations'] = convList
+
+    return response
+
+
+
+class JoinedConversationsApi(ApiServiceHandler):
+        """REST API handler to allow interaction with conversation data"""
+
+        def get_hook(self, user, *args):
+            """Get conversation data API"""
+            return get_my_conversations(user)
+
+
+def get_my_conversations(user):
+    """Get conversations by name, or get all conversations if no names provided"""
+    logging.debug("***get_my_conversations")
+    response = {'status': 200}
+    results = Conversations.get_conversation_by_owner(user)
+    convList = []
+    for conv in results:
+        userList = ConvUsers.get_by_user_and_conv(user, conv)
+        if userList:
+            convList.append({'id': conv.key.id(), 'name': conv.name, 'joined': True })
+        else:
+            convList.append({'id': conv.key.id(), 'name': conv.name, 'joined': False})
 
     response['conversations'] = convList
 

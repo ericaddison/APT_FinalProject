@@ -80,3 +80,5 @@ class ConvUsers(ndb.Model):
         cuser = cuser.filter(ConvUsers.conv == conv.key)
         cuser = cuser.filter(ConvUsers.user == user.key)
         return cuser.get()
+
+
