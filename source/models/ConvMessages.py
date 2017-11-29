@@ -18,6 +18,9 @@ class ConvMessages(ndb.Model):
     def get_media_url(self):
         return self.edits[-1]['media_url']
 
+    def get_date(self):
+        return self.edits[-1]['date']
+
     def get_basic_data(self):
         return {'id': self.get_id(),
                 'userAlias': self.alias,
