@@ -73,7 +73,7 @@ main, #messages-card {
 .message-container.visible {
   opacity: 1;
 }
-.message-container .pic {
+.message-container.pic {
   background-image: url('/images/profile_placeholder.png');
   background-repeat: no-repeat;
   width: 30px;
@@ -81,22 +81,22 @@ main, #messages-card {
   background-size: 30px;
   border-radius: 20px;
 }
-.message-container .spacing {
+.message-container.spacing {
   display: table-cell;
   vertical-align: top;
 }
-.message-container .message {
+.message-container.message {
   display: table-cell;
   width: calc(100% - 40px);
   padding: 5px 0 5px 10px;
 }
-.message-container .name {
+.message-container.name {
   display: inline-block;
   width: 100%;
   padding-left: 40px;
   color: #bbb;
   font-style: italic;
-  font-size: 12px;
+  font-size: 10px;
   box-sizing: border-box;
 }
 #message-form {
