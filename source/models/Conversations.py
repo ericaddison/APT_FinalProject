@@ -169,6 +169,13 @@ class Conversations(ndb.Model):
         return True, conv
 
     @classmethod
+    def delete(cls, conv_id):
+        conv = cls.get_conversation_by_id(conv_id)
+        conv.key.delete()
+        return None
+
+
+    @classmethod
     def random_name(cls):
         good_name = False
         while not good_name:

@@ -92,6 +92,7 @@ def update_conversation(user, conv_id, name, destroy_date,
 
 def delete_conversation(user, conv_id):
     """Delete a conversation"""
+    Conversations.delete(conv_id)
     response = {}
     response['conversations'] = "Deleted conversation"
     return response

@@ -76,3 +76,14 @@
             })
         }
 
+        function deleteConvo(){
+            var url = window.location.href;
+            var convId = url.match(/(\d+)$/)[0];
+            $.ajax({
+                url: '/api/conversations/' + convId, type: 'DELETE',
+                headers: {'Authorization': 'Bearer ' + userIdToken}
+            }).then(function(result) {
+                    window.location.replace('/manage');
+                })
+
+            }
