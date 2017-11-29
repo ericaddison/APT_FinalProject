@@ -155,7 +155,7 @@ class ConversationsApi(ApiServiceHandler):
 class OwnedConversationsApi(ApiServiceHandler):
         """REST API handler to allow interaction with conversation data"""
 
-        def get_hook(self, user, *args):
+        def get_hook(self, user, *args, **kwargs):
             """Get conversation data API"""
             return get_my_conversations(user)
 
@@ -178,7 +178,7 @@ def get_my_conversations(user):
 class JoinedConversationsApi(ApiServiceHandler):
         """REST API handler to allow interaction with conversation data"""
 
-        def get_hook(self, user, *args):
+        def get_hook(self, user, *args, **kwargs):
             """Get conversation data API"""
             return get_my_conversations(user)
 
