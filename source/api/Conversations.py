@@ -104,11 +104,11 @@ def delete_conversation(user, conv_id):
 class ConversationsApi(ApiServiceHandler):
     """REST API handler to allow interaction with conversation data"""
 
-    def get_hook(self, user, *args):
+    def get_hook(self, user, *args, **kwargs):
         """Get conversation data API"""
         return get_conversations(user, args[0])
 
-    def post_hook(self, user, *args):
+    def post_hook(self, user, *args, **kwargs):
         """Create conversation data API"""
         logging.debug("***post_hook user: {}, args: {}".format(user, args))
         if args[0]:
@@ -128,7 +128,7 @@ class ConversationsApi(ApiServiceHandler):
                                    view_after_expire, reveal_owner,
                                    restrict_comms, password)
 
-    def put_hook(self, user, *args):
+    def put_hook(self, user, *args, **kwargs):
         """Update conversation API"""
         name = self.get_request_param(c.conversastion_name_parm)
         destroy_date = self.get_request_param(c.destroydate_parm)
@@ -142,7 +142,7 @@ class ConversationsApi(ApiServiceHandler):
                                    id_policy, view_after_expire, reveal_owner,
                                    restrict_comms, password)
 
-    def delete_hook(self, user, *args):
+    def delete_hook(self, user, *args, **kwargs):
         """Delete conversation API"""
         return delete_conversation(user, args[0])
 

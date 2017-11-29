@@ -38,13 +38,13 @@ def delete_user(user):
 class UsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with user settings"""
 
-    def get_hook(self, user, *args):
+    def get_hook(self, user, *args, **kwargs):
         #user is a local user object
         """Get user settings for a user"""
         # return user settings for a user based on email from access token
         return get_user(user)
 
-    def put_hook(self, user, *args):
+    def put_hook(self, user, *args, **kwargs):
         """Update user settings for a user"""
         print "put_hook:  ", args;
         fname = self.get_request_param(c.fname_parm)
@@ -52,7 +52,7 @@ class UsersApi(ApiServiceHandler):
         prefcomm = self.get_request_param(c.prefcomm_parm)
         return update_user(user, fname, lname, prefcomm)
 
-    def delete_hook(self, user, *args):
+    def delete_hook(self, user, *args, **kwargs):
         """Delete a user"""
         # delete user info from database by email in the token info
         return delete_user(user)

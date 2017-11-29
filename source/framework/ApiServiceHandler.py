@@ -1,5 +1,5 @@
 from source.framework.BaseHandler import BaseHandler
-from source.framework.user_authentication import user_authentication
+from source.framework.user_authentication import user_authentication, get_token
 import logging
 
 BAD_AUTH_RESPONSE = {'status': 404, 'message': 'User authentication failed'}
@@ -20,7 +20,8 @@ class ApiServiceHandler(BaseHandler):
         user = None
         auth_header = self.get_auth_header()
         if auth_header:
-            user = user_authentication(auth_header)
+            access_token = get_token(auth_header)
+            user = user_authentication(access_token)
         else:
             logging.warning("ApiServiceHandler.process(): no auth_header found")
 
@@ -28,7 +29,7 @@ class ApiServiceHandler(BaseHandler):
         if not user:
             response = BAD_AUTH_RESPONSE
         else:
-            response = method(user, *args)
+            response = method(user, *args, access_token=access_token)
 
         if 'status' in response.keys():
             self.response.set_status(response['status'])
@@ -48,16 +49,16 @@ class ApiServiceHandler(BaseHandler):
     def delete(self, *args):
         self.process(self.delete_hook, *args)
 
-    def get_hook(self, user, *args):
+    def get_hook(self, user, *args, **kwargs):
         return self.notallowed_response('GET')
 
-    def post_hook(self, user, *args):
+    def post_hook(self, user, *args, **kwargs):
         return self.notallowed_response('POST')
 
-    def put_hook(self, user, *args):
+    def put_hook(self, user, *args, **kwargs):
         return self.notallowed_response('PUT')
 
-    def delete_hook(self, user, *args):
+    def delete_hook(self, user, *args, **kwargs):
         return self.notallowed_response('DELETE')
 
     def notallowed_response(self, method):

@@ -19,6 +19,17 @@
 function ChatApp() {
   this.checkSetup();
 
+  // before anything, make sure user has joined the conversation...
+  //TODO: also prompt for password here if necessary
+
+    $.ajax({url: '/api/conversations/'+convId+'/users/',
+            type: "POST",
+            headers: {'Authorization': 'Bearer ' + userIdToken}
+            }).then(function(result){
+                console.log(result)
+            });
+
+
   // Shortcuts to DOM Elements.
   this.messageList = document.getElementById('messages');
   this.messageForm = document.getElementById('message-form');
@@ -94,16 +105,7 @@ ChatApp.prototype.saveMessage = function(e) {
       $.ajax({url: postUrl, type: "POST",
              headers: {'Authorization': 'Bearer ' + userIdToken},
              data: {"text": this.messageInput.value, "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'}
-
-            }).then(function(result) {
-                var userAlias = result['messages']['userAlias'];
-                messageRef.push({
-                    //name: currentUser.displayName,
-                    name: result['messages']['userAlias'],
-                    text: messageInput.value,
-                    photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
-                    timestamp: new Date().getTime()  //UTC timestamp
-                }).then(function () {
+            }).then(function () {
                     //Clear message text field and SEND button state.
                     ChatApp.resetMaterialTextfield(messageInput);
                     toggleButton;

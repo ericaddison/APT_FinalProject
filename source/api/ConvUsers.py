@@ -53,11 +53,11 @@ def delete_convuser(user, conv_id):
 class ConvUsersApi(ApiServiceHandler):
     """REST API handler to allow interaction with ConvUsers"""
 
-    def get_hook(self, user, *args):
+    def get_hook(self, user, *args, **kwargs):
         """Get ConvUsers API"""
         return get_convusers(user, args[0])
 
-    def post_hook(self, user, *args):
+    def post_hook(self, user, *args, **kwargs):
         """Create ConvUser (user join conversation) API"""
         if args[1]:
             return NOT_FOUND_RESPONSE
@@ -67,7 +67,7 @@ class ConvUsersApi(ApiServiceHandler):
 
         return create_convuser(user, args[0], comm_option, comm_detail)
 
-    def delete_hook(self, user, *args):
+    def delete_hook(self, user, *args, **kwargs):
         """Delete convUser (user leave conversation) API"""
         return delete_convuser(user, args[0])
 
