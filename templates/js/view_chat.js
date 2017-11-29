@@ -105,16 +105,13 @@ ChatApp.prototype.saveMessage = function(e) {
       $.ajax({url: postUrl, type: "POST",
              headers: {'Authorization': 'Bearer ' + userIdToken},
              data: {"text": this.messageInput.value, "media_url_param": currentUser.photoURL || 'images/profile_placeholder.png'}
+
             }).then(function () {
                     //Clear message text field and SEND button state.
                     ChatApp.resetMaterialTextfield(messageInput);
                     toggleButton;
 
-          }.bind(this)).catch(function (error) {
-              console.error('Error writing new message to Firebase Database', error);
           });
-      });
-
   }
 };
 
